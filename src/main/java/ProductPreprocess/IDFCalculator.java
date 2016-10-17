@@ -50,7 +50,7 @@ public class IDFCalculator{
                 attributeIDFs.put(word,(double)(0));
                 descriptionIDFs.put(word,(double)(0));
             }
-            titleIDFs.put(word,(titleIDFs.get(word)*productCount+1)/(productCount+1));
+            titleIDFs.put(word,(titleIDFs.get(word)*productCount+1.0)/(productCount+1.0));
         }
     }
 
@@ -66,7 +66,7 @@ public class IDFCalculator{
                 attributeIDFs.put(word,(double)(0));
                 descriptionIDFs.put(word,(double)(0));
             }
-            attributeIDFs.put(word,(attributeIDFs.get(word)*productCount+1)/(productCount+1));
+            attributeIDFs.put(word,(attributeIDFs.get(word)*productCount+1.0)/(productCount+1.0));
         }
     }
 
@@ -82,7 +82,7 @@ public class IDFCalculator{
                 attributeIDFs.put(word,(double)(0));
                 descriptionIDFs.put(word,(double)(0));
             }
-            descriptionIDFs.put(word,(descriptionIDFs.get(word)*productCount+1)/(productCount+1));
+            descriptionIDFs.put(word,(descriptionIDFs.get(word)*productCount+1.0)/(productCount+1.0));
         }
     }
 

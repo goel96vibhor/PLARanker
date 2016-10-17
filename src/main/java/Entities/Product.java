@@ -1,5 +1,9 @@
 package Entities;
 
+import java.util.HashMap;
+import Utils.TFIDFCalculator;
+
+
 /**
  * Created by aman on 9/23/16.
  */
@@ -18,6 +22,41 @@ public class Product {
     private String description;
     private String merchant_name;
     private String manufacturer;
+    private String attributes;
+    private double sellerRating;
+    private boolean popularBrand;
+    private double expectedRPM;
+    private Features features;
+    private HashMap<String, Integer> titleTermVec;
+    private HashMap<String, Integer> attributeTermVec;
+    private HashMap<String, Integer> descriptionTermVec;
+
+    public HashMap<String, Integer> getTitleTermVec() {
+        return titleTermVec;
+    }
+
+    public HashMap<String, Integer> getAttributeTermVec() {
+        return attributeTermVec;
+    }
+
+    public HashMap<String, Integer> getDescriptionTermVec() {
+        return descriptionTermVec;
+    }
+
+    public void calculateProductTermVecs()
+    {
+        titleTermVec= TFIDFCalculator.getTermVecfromString(title);
+        descriptionTermVec= TFIDFCalculator.getTermVecfromString(description);
+        attributeTermVec= TFIDFCalculator.getTermVecfromString(attributes);
+    }
+
+    public void calculateFeatures(String query)
+    {
+        HashMap<String, Integer> queryTermVec= TFIDFCalculator.getTermVecfromString(query);
+        features.setTitleTFIDF(TFIDFCalculator.calculateDocumentTFIDF(getTitleTermVec(), queryTermVec));
+        features.setAttributeTFIDF(TFIDFCalculator.calculateDocumentTFIDF(getAttributeTermVec(), queryTermVec));
+        features.setDescriptionTFIDF(TFIDFCalculator.calculateDocumentTFIDF(getDescriptionTermVec(), queryTermVec));
+    }
 
     public String getTitle() {
         return title;
@@ -42,15 +81,6 @@ public class Product {
     public void setFeatures(Features features) {
         this.features = features;
     }
-
-    private String attributes;
-    private double sellerRating;
-    private boolean popularBrand;
-    private double expectedRPM;
-    private Features features;
-
-
-
 
     public int getAdPosition() {
         return adPosition;

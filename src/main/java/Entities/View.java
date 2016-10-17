@@ -9,4 +9,6 @@ public class View {
     private String publisherUrl;
     private String query;
     private List<Product> ads;
+
+
 }
