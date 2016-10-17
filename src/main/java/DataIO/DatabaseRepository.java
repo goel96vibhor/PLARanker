@@ -26,4 +26,7 @@ public class DatabaseRepository {
     public static List<Long> getUrlKeys() {return null;}
 
     public static List<Product> getProductsforUrlKey() {return null;}
+
+    public static List<Product> getProductsforSubCategory(){return null;}
+
 }

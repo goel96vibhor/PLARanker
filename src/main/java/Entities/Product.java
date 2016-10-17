@@ -7,7 +7,7 @@ public class Product {
     private long ad_id;
     private long urlKey;
     private String title;
-    private String pulisherUrl;
+    private String publisherUrl;
     private int adPosition;
     private int categoryId;
     private double netBid;
@@ -18,11 +18,38 @@ public class Product {
     private String description;
     private String merchant_name;
     private String manufacturer;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPublisherUrl() {
+        return publisherUrl;
+    }
+
+    public void setPublisherUrl(String publisherUrl) {
+        this.publisherUrl = publisherUrl;
+    }
+
+    public Features getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(Features features) {
+        this.features = features;
+    }
+
     private String attributes;
     private double sellerRating;
     private boolean popularBrand;
     private double expectedRPM;
     private Features features;
+
+
 
 
     public int getAdPosition() {
