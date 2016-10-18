@@ -18,7 +18,9 @@ public class StopWordHash{
          stopWordHash= new HashSet<String>();
          for(String word:stopWordList)
          {
-             stopWordHash.add(word);
+             stopWordHash.add(WordRetrieval.getStemmedWord(word));
          }
     }
+
+
 }

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import Entities.Product;
+import org.apache.log4j.Logger;
+
 /**
         * Created by vibhor.go on 10/14/16.
 */
@@ -14,6 +16,7 @@ public class IDFCalculator{
     public static HashMap<String, Double> titleIDFs ;
     public static HashMap<String, Double> attributeIDFs ;
     public static HashMap<String, Double> descriptionIDFs ;
+    private static Logger logger = Logger.getLogger(IDFCalculator.class.getName());
 
     public IDFCalculator()
     {
@@ -28,12 +31,16 @@ public class IDFCalculator{
     {
         for(Product product:productList)
         {
+
             if(!ProductHash.productinHash(product)){
                 updateTitleIdf(product);
                 updateAttributeIdf(product);
                 updateDescriptionIdf(product);
+                logger.info("updated idfs for product with ad_id: "+product.getAd_id());
                 ProductHash.addProducttoHash(product);
                 productCount+=1;
+                logger.info("added product with ad_id: "+product.getAd_id()+" to product hash.");
+
             }
         }
     }
@@ -42,6 +49,7 @@ public class IDFCalculator{
     {
         String title=product.getTitle();
         List<String> titleWords= WordRetrieval.retrieveProcessedWords(title);
+        logger.info("retrieved processed description words for product with id: "+product.getAd_id());
         for(String word: titleWords)
         {
             if(!titleIDFs.containsKey(word))
@@ -58,6 +66,7 @@ public class IDFCalculator{
     {
         String attributes=product.getAttributes();
         List<String> attributeWords= WordRetrieval.retrieveProcessedWords(attributes);
+        logger.info("retrieved processed attribute words for product with id: "+product.getAd_id());
         for(String word: attributeWords)
         {
             if(!attributeIDFs.containsKey(word))
@@ -74,6 +83,7 @@ public class IDFCalculator{
     {
         String description=product.getDescription();
         List<String> descriptionWords= WordRetrieval.retrieveProcessedWords(description);
+        logger.info("retrieved processed description words for product with id: "+product.getAd_id());
         for(String word: descriptionWords)
         {
             if(!descriptionIDFs.containsKey(word))

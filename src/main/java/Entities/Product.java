@@ -1,7 +1,9 @@
 package Entities;
 
 import java.util.HashMap;
-import Utils.TFIDFCalculator;
+
+import Utils.SimilarityCalculator;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -30,6 +32,22 @@ public class Product {
     private HashMap<String, Integer> titleTermVec;
     private HashMap<String, Integer> attributeTermVec;
     private HashMap<String, Integer> descriptionTermVec;
+    private int titleLength;
+    private int descriptionLength;
+    private int attributeslength;
+    private static Logger logger = Logger.getLogger(Product.class.getName());
+
+    public int getTitleLength() {
+        return titleLength;
+    }
+
+    public int getDescriptionLength() {
+        return descriptionLength;
+    }
+
+    public int getAttributeslength() {
+        return attributeslength;
+    }
 
     public HashMap<String, Integer> getTitleTermVec() {
         return titleTermVec;
@@ -45,17 +63,22 @@ public class Product {
 
     public void calculateProductTermVecs()
     {
-        titleTermVec= TFIDFCalculator.getTermVecfromString(title);
-        descriptionTermVec= TFIDFCalculator.getTermVecfromString(description);
-        attributeTermVec= TFIDFCalculator.getTermVecfromString(attributes);
+        logger.info("calculating term vectors for product with id: "+getAd_id());
+        titleTermVec= SimilarityCalculator.getTermVecfromString(title);
+        descriptionTermVec= SimilarityCalculator.getTermVecfromString(description);
+        attributeTermVec= SimilarityCalculator.getTermVecfromString(attributes);
+        titleLength= SimilarityCalculator.getTermVecTermCount(titleTermVec);
+        attributeslength= SimilarityCalculator.getTermVecTermCount(attributeTermVec);
+        descriptionLength= SimilarityCalculator.getTermVecTermCount(descriptionTermVec);
     }
 
     public void calculateFeatures(String query)
     {
-        HashMap<String, Integer> queryTermVec= TFIDFCalculator.getTermVecfromString(query);
-        features.setTitleTFIDF(TFIDFCalculator.calculateDocumentTFIDF(getTitleTermVec(), queryTermVec));
-        features.setAttributeTFIDF(TFIDFCalculator.calculateDocumentTFIDF(getAttributeTermVec(), queryTermVec));
-        features.setDescriptionTFIDF(TFIDFCalculator.calculateDocumentTFIDF(getDescriptionTermVec(), queryTermVec));
+        logger.info("finding features for query \""+ query+"\" and product with id: "+getAd_id());
+        HashMap<String, Integer> queryTermVec= SimilarityCalculator.getTermVecfromString(query);
+        features.setTitleTFIDF(SimilarityCalculator.calculateDocumentTFIDF(getTitleTermVec(), queryTermVec, getTitleLength()));
+        features.setAttributeTFIDF(SimilarityCalculator.calculateDocumentTFIDF(getAttributeTermVec(), queryTermVec, getAttributeslength()));
+        features.setDescriptionTFIDF(SimilarityCalculator.calculateDocumentTFIDF(getDescriptionTermVec(), queryTermVec, getDescriptionLength()));
     }
 
     public String getTitle() {
