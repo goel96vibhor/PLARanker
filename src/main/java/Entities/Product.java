@@ -18,7 +18,7 @@ public class Product {
     private int categoryId;
     private double netBid;
     private double netTotalRevenue;
-    private double clicked;
+    private int clicked;
     private double price;
     private double originalPrice;
     private String description;
@@ -137,11 +137,11 @@ public class Product {
         this.netTotalRevenue = netTotalRevenue;
     }
 
-    public double getClicked() {
+    public int getClicked() {
         return clicked;
     }
 
-    public void setClicked(double clicked) {
+    public void setClicked(int clicked) {
         this.clicked = clicked;
     }
 
