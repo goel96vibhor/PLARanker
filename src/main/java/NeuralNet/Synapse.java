@@ -11,6 +11,9 @@ public class Synapse {
     protected Neuron inputNeuron;
     private Double weight=0.0;
     public static Random random= new Random();
+    private Double weightAdjustment=0.0;
+
+
     public Synapse(Neuron inputNeuron, Neuron outputNeuron)
     {
         this.outputNeuron= outputNeuron;
@@ -28,8 +31,17 @@ public class Synapse {
         this.weight = weight;
     }
 
-    public void adjustWeight(Double dw)
+    public void adjustWeight()
     {
-        this.weight+=dw;
+        this.weight+=weightAdjustment;
+        //weightAdjustment=0.0;
+    }
+
+    public Double getWeightAdjustment() {
+        return weightAdjustment;
+    }
+
+    public void setWeightAdjustment(Double weightAdjustment) {
+        this.weightAdjustment = weightAdjustment;
     }
 }

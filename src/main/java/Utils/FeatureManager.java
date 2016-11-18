@@ -23,11 +23,14 @@ public class FeatureManager {
         if(featureIds.size()>0)
         {
             int i=0;
+            featuresToUse= new int[featureIds.size()];
             for(String featureId: featureIds )featuresToUse[i++]=Integer.parseInt(featureId);
         }
         else
         {
+            featuresToUse=new int[featureCount];
             for(int i=0;i<featureCount;i++)featuresToUse[i]=i;
+
         }
     }
 

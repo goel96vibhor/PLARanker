@@ -14,7 +14,9 @@ public class Layer {
 
     public Layer(int numofNeurons)
     {
-        neurons= new ArrayList<Neuron>(numofNeurons);
+        neurons= new ArrayList<Neuron>();
+        for(int i=0;i<numofNeurons;i++)
+            neurons.add(new Neuron());
     }
 
     public void connectLayer(Layer inputLayer)
@@ -83,6 +85,17 @@ public class Layer {
             for(Synapse synapse: neuron.outlinks)
             {
                 synapse.setWeight(layerWeights.get(i++));
+            }
+        }
+    }
+
+    public void setInput(int ranklistSize)
+    {
+        for(Neuron neuron:neurons)
+        {
+            for(int i=0;i<ranklistSize;i++)
+            {
+                neuron.outputs.add(0.0d);
             }
         }
     }

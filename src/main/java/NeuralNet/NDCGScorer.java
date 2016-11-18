@@ -54,19 +54,23 @@ public class NDCGScorer implements Scorer
         {
            result+=gains[rankList.targetValues.get(i)]*discount[i];
         }
-        Double ideal= getIdealDcg(rankList);
+        Double ideal= getIdealScore(rankList);
         if(Math.abs(ideal-0.0)<0.000001)return 0.0;
         return result/ideal;
     }
 
-    public double getIdealDcg(RankList rankList)
+    public double getIdealScore(RankList rankList)
     {
+        if(rankList.targetValues.size()==0)return 0.0;
+        int size=rankList.targetValues.size()> ndcgRelSize ? ndcgRelSize :rankList.targetValues.size();
         ArrayIndexComparator comparator= new ArrayIndexComparator(rankList.targetValues);
         Integer [] indices= comparator.createIndexArray();
         Arrays.sort(indices, comparator);
         Double idealDcg=0.0;
-        for(int i=0;i< ndcgRelSize;i++)
+        for(int i=0;i< size;i++)
         {
+//            System.out.print(rankList.targetValues.get(indices[i])+" ");
+//            System.out.println(gains[rankList.targetValues.get(indices[i])]);
             idealDcg+=gains[rankList.targetValues.get(indices[i])]*discount[i];
         }
         return idealDcg;
@@ -75,7 +79,7 @@ public class NDCGScorer implements Scorer
     public ArrayList<ArrayList<Double>> swapChange(RankList rankList)
     {
         ArrayList<ArrayList<Double>> swapScoreDiff= new ArrayList<ArrayList<Double>>();
-        Double ideal= getIdealDcg(rankList);
+        Double ideal= getIdealScore(rankList);
         for(int i=0;i<rankList.targetValues.size();i++)
         {
             ArrayList<Double> posSwapDiff= new ArrayList<Double>();

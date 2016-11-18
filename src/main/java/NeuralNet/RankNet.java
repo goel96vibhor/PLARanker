@@ -2,11 +2,13 @@ package NeuralNet;
 
 import Entities.RankList;
 import Utils.FeatureManager;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,14 +19,15 @@ public class RankNet{
     private int inputSize;
     private int outputSize=1;
     protected List<Layer> layers;
-    private int nHiddenLayer=1;
+    private int nHiddenLayer=2;
     private int nHiddenNodeperLayer=10;
-    private static int nIterations=100;
+    private static int nIterations=1000;
     private List<RankList> trainSamples;
     private List<RankList> validationSamples;
     protected double bestScoreonValidation=0.0;
     private ArrayList<ArrayList<Double>> bestValidationModel= new ArrayList<ArrayList<Double>>();
     protected static Scorer mrrScorer= new MRRScorer();
+    private static Logger logger = Logger.getLogger(RankNet.class.getName());
     public RankNet(List<RankList> trainSamples, List<RankList> validationSamples, int inputSize, int outputSize)
     {
         this.inputSize=inputSize;
@@ -44,8 +47,11 @@ public class RankNet{
         for(int i=1;i<layers.size();i++)layers.get(i).connectLayer(layers.get(i-1));
         Layer inputLayer= layers.get(0);
         //connect bias to all layers
+        //System.out.println(inputLayer.neurons.size());
+        Neuron biasNeuron=inputLayer.neurons.get(inputSize);
         for(int i=2;i<layers.size();i++){
-            layers.get(i).connectNeuron(inputLayer.neurons.get(inputLayer.neurons.size()-1));
+
+            layers.get(i).connectNeuron(biasNeuron);
 
         }
         for(int i=0;i<layers.size()-1;i++)bestValidationModel.add(new ArrayList<Double>());
@@ -55,13 +61,18 @@ public class RankNet{
     public void setInput(RankList rl)
     {
         List<Neuron> inputLayerNeurons= layers.get(0).neurons;
+//        System.out.println(inputLayerNeurons.size()+" "+rl.listFeatures.get(0).size());
         for(List<Double> sampleFeatures: rl.listFeatures)
         {
             for(int i=0;i<sampleFeatures.size();i++)
             {
                 inputLayerNeurons.get(i).outputs.add(sampleFeatures.get(i)) ;
             }
-            inputLayerNeurons.get(inputLayerNeurons.size()-1).setOutput(1.0f);
+            inputLayerNeurons.get(inputLayerNeurons.size()-1).outputs.add(1.0d);
+        }
+        for(int i=1;i<layers.size();i++)
+        {
+            layers.get(i).setInput(rl.listFeatures.size());
         }
 
     }
@@ -109,8 +120,11 @@ public class RankNet{
 
     public void batchBackPropagate(ArrayList<ArrayList<Integer> > pairMap, ArrayList<ArrayList<Double> >pairWeight)
     {
+        ArrayList<Double> computedDeltai= new ArrayList<Double>();
+        ArrayList<Double> computedDeltaj= new ArrayList<Double>();
         for(int i=0;i<pairMap.size();i++)
         {
+            computedDeltaj= new ArrayList<Double>();
             Layer outputLayer= layers.get(layers.size()-1);
             for(Neuron neuron: outputLayer.neurons){
                 neuron.computeOuterDeltas(pairMap, pairWeight, i);
@@ -123,7 +137,16 @@ public class RankNet{
             {
                 layers.get(j).updateWeight(pairMap,i);
             }
+            computedDeltai.add(layers.get(layers.size()-1).neurons.get(0).getDelta_i());
+            for(int k=0;k<layers.get(layers.size()-1).neurons.get(0).inLinks.size();k++)
+                    computedDeltaj.add(layers.get(layers.size()-1).neurons.get(0).inLinks.get(k).getWeightAdjustment());
+            System.out.print(computedDeltaj.toString()+"  ");
+            //System.out.print(Arrays.toString(layers.get(layers.size()-1).neurons.get(0).getDelta_j()));
+            System.out.println("  "+pairMap.get(i));
         }
+        //System.out.println();
+        System.out.println(computedDeltai.toString());
+        System.out.println();
     }
 
     public RankList reorder(RankList rankList, int [] sortIndex)
@@ -134,8 +157,20 @@ public class RankNet{
 
     public void trainIteration()
     {
+//        for(Synapse s: layers.get(layers.size()-3).neurons.get(0).inLinks)
+//        {
+//            System.out.print(s.getWeight()+" ");
+//        }
+//        System.out.println();
+//        for(Synapse s: layers.get(layers.size()-3).neurons.get(1).inLinks)
+//        {
+//            System.out.print(s.getWeight()+" ");
+//        }
+//        System.out.println();
+
         for(RankList rl:trainSamples)
         {
+
             ArrayList<Double> scoresOnModel=eval(rl);
             int [] sortIndex=getSortedIndices(scoresOnModel, false);
             RankList rankList= reorder(rl,sortIndex);
@@ -143,51 +178,74 @@ public class RankNet{
             setInput(rankList);
             ArrayList<ArrayList<Integer> > pairmap= batchFeedForward(rankList,sortIndex);
             ArrayList<ArrayList<Double> > pairWeight = computePairWeight(pairmap);
+            System.out.println(Arrays.toString(sortIndex));
             batchBackPropagate(pairmap,pairWeight);
-
         }
+        System.out.println();
+        System.out.println();
+
     }
 
     public void train()
     {
         Double score;
+        Double idealScore=0.0;
+        RankList predictedrankList;
         for(int i=0;i<nIterations;i++)
         {
-            trainIteration();
+
             if(validationSamples!=null)
             {
                 score=0.0;
                 for(RankList rl:validationSamples)
                 {
+                    ArrayList<Double> scorefromNetwork=eval(rankedProducts(rl));
+                    //System.out.println(scorefromNetwork.toString());
                     score+=mrrScorer.score(rankedProducts(rl));
                 }
                 score/=validationSamples.size();
+                System.out.println(score);
                 if(score>bestScoreonValidation)
                 {
                     bestScoreonValidation=score;
                     saveBestValidationModel();
                 }
             }
-
+            trainIteration();
 
         }
-        if (validationSamples!=null)loadBestValidationModel();
+        if (validationSamples!=null && (bestScoreonValidation-0.0)>0.000001)loadBestValidationModel();
 
         score=0.0;
+        idealScore=0.0;
         for (RankList rankList:trainSamples)
         {
-            score+=mrrScorer.score(rankedProducts(rankList));
+            predictedrankList=rankedProducts(rankList);
+            Double temp= mrrScorer.score(predictedrankList);
+            //for(int i=0;i<predictedrankList.targetValues.size();i++)System.out.print(predictedrankList.targetValues.get(i)+" ");
+            System.out.println(rankList.getViewid()+" "+temp);
+            score+=temp;
+            idealScore+=mrrScorer.getIdealScore(rankList);
         }
         score/=trainSamples.size();
+        idealScore/=trainSamples.size();
+        logger.info("Score on training data "+ score);
+        logger.info("Ideal Score on training data "+idealScore);
+
 
         if (validationSamples!=null)
         {
             score=0.0;
+            idealScore=0.0;
             for (RankList rankList:validationSamples)
             {
                 score+=mrrScorer.score(rankedProducts(rankList));
+                idealScore+=mrrScorer.getIdealScore(rankList);
             }
             score/=validationSamples.size();
+            idealScore/=trainSamples.size();
+            logger.info("Score on validation data "+ score);
+            logger.info("Ideal Score on validation data "+idealScore);
         }
 
     }
@@ -198,6 +256,7 @@ public class RankNet{
         {
             bestValidationModel.get(i).clear();
             bestValidationModel.set(i,layers.get(i).getOutlinkWeights());
+            System.out.println("best validation model layer "+i+" size "+bestValidationModel.get(i).size());
         }
     }
 
@@ -205,6 +264,8 @@ public class RankNet{
     {
         for (int i=0;i<layers.size()-1;i++)
         {
+            System.out.print("loading layer " + i + " ");
+            System.out.println(bestValidationModel.get(i).size());
             layers.get(i).setOutlinkWeights(bestValidationModel.get(i));
         }
     }
@@ -248,9 +309,10 @@ public class RankNet{
         setInput(rankList);
         for(int i=1;i<layers.size();i++)
         {
-            for(int j=0;i<rankList.listFeatures.size();j++)
+            for(int j=0;j<rankList.listFeatures.size();j++)
             {
                 layers.get(i).computeOutput(j);
+                //System.out.println("computed output for index "+j);
             }
         }
         return layers.get(layers.size()-1).neurons.get(0).outputs;

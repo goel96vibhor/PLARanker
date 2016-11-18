@@ -50,4 +50,11 @@ public class LambdaRank extends RankNet
         return "LambdaRank";
     }
 
+    public RankList reorder(RankList rankList, int [] sortIndex)
+    {
+
+        return new RankList(rankList, sortIndex);
+    }
+
+
 }

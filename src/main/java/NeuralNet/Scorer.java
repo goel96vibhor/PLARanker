@@ -12,4 +12,5 @@ public interface Scorer
 {
     public Double score(RankList rankList);
     public ArrayList<ArrayList<Double>> swapChange(RankList rankList);
+    public double getIdealScore(RankList rankList);
 }

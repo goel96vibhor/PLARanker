@@ -14,10 +14,10 @@ public class Neuron {
 
     private TransferFunction transferFunction;
     protected double output;
-    protected ArrayList<Double> outputs;
-    protected List<Synapse> inLinks;
-    protected List<Synapse> outlinks;
-    private Double learningRate= 0.005;
+    protected ArrayList<Double> outputs= new ArrayList<Double>();
+    protected List<Synapse> inLinks= new ArrayList<Synapse>();
+    protected List<Synapse> outlinks= new ArrayList<Synapse>();
+    private Double learningRate= 0.001;
     private Double delta_i;
     private Double delta_j[];
 
@@ -40,6 +40,7 @@ public class Neuron {
             {
                 weight=1.0;
                 lambda=weight*(Double)(1.0/(1.0+Math.exp(outputs.get(current)-outputs.get(j))));
+
             }
             else
             {
@@ -56,7 +57,7 @@ public class Neuron {
     {
         ArrayList<Integer> pairmap_i= pairmap.get(current);
         delta_j=new Double[pairmap_i.size()];
-        Arrays.fill(delta_j,0.0f);
+        Arrays.fill(delta_j,0.0d);
         Double weight=1.0d;
         delta_i=0.0d;
         for(Synapse synapse:outlinks)
@@ -82,7 +83,8 @@ public class Neuron {
             }
             Double dw=delta_i*synapse.inputNeuron.outputs.get(current)-errorsum;
             dw*=learningRate;
-            synapse.adjustWeight(dw);
+            synapse.setWeightAdjustment(dw);
+            synapse.adjustWeight();
 
         }
     }
@@ -92,6 +94,7 @@ public class Neuron {
         Double wsum=0.0d;
         for(Synapse synapse:inLinks)
         {
+            //System.out.println(synapse.inputNeuron.outputs.size()+" "+index);
             wsum+=synapse.inputNeuron.outputs.get(index)*synapse.getWeight();
         }
         outputs.set(index,transferFunction.getValue(wsum));
@@ -120,5 +123,21 @@ public class Neuron {
 
     public void setLearningRate(Double learningRate) {
         this.learningRate = learningRate;
+    }
+
+    public Double[] getDelta_j() {
+        return delta_j;
+    }
+
+    public void setDelta_j(Double[] delta_j) {
+        this.delta_j = delta_j;
+    }
+
+    public Double getDelta_i() {
+        return delta_i;
+    }
+
+    public void setDelta_i(Double delta_i) {
+        this.delta_i = delta_i;
     }
 }
