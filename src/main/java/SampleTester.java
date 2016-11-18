@@ -29,7 +29,7 @@ public class SampleTester
         trainTest.add(trainSamples.get(3));
         trainTest.add(trainSamples.get(5));
 
-        RankNet rankNet= new RankNet(trainTest,validationSamples,trainSamples.get(0).listFeatures.get(0).size(),1);
+        RankNet rankNet= new RankNet(trainSamples,validationSamples,trainSamples.get(0).listFeatures.get(0).size(),1);
         rankNet.setMrrScorer(new NDCGScorer());
         rankNet.initialize();
         rankNet.train();

@@ -77,6 +77,7 @@ public class Neuron {
         Double errorsum=0.0d;
         for(Synapse synapse:inLinks)
         {
+            errorsum=0.0d;
             for(int k=0;k<delta_j.length;k++)
             {
                 errorsum+=delta_j[k]*synapse.inputNeuron.outputs.get(pairmap.get(current).get(k));

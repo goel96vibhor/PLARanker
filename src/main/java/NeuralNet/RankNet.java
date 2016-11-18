@@ -21,7 +21,7 @@ public class RankNet{
     protected List<Layer> layers;
     private int nHiddenLayer=2;
     private int nHiddenNodeperLayer=10;
-    private static int nIterations=1000;
+    private static int nIterations=100;
     private List<RankList> trainSamples;
     private List<RankList> validationSamples;
     protected double bestScoreonValidation=0.0;
@@ -124,7 +124,7 @@ public class RankNet{
         ArrayList<Double> computedDeltaj= new ArrayList<Double>();
         for(int i=0;i<pairMap.size();i++)
         {
-            computedDeltaj= new ArrayList<Double>();
+            //computedDeltaj= new ArrayList<Double>();
             Layer outputLayer= layers.get(layers.size()-1);
             for(Neuron neuron: outputLayer.neurons){
                 neuron.computeOuterDeltas(pairMap, pairWeight, i);
@@ -137,16 +137,16 @@ public class RankNet{
             {
                 layers.get(j).updateWeight(pairMap,i);
             }
-            computedDeltai.add(layers.get(layers.size()-1).neurons.get(0).getDelta_i());
-            for(int k=0;k<layers.get(layers.size()-1).neurons.get(0).inLinks.size();k++)
-                    computedDeltaj.add(layers.get(layers.size()-1).neurons.get(0).inLinks.get(k).getWeightAdjustment());
-            System.out.print(computedDeltaj.toString()+"  ");
+//            computedDeltai.add(layers.get(layers.size()-1).neurons.get(0).getDelta_i());
+//            for(int k=0;k<layers.get(layers.size()-1).neurons.get(0).inLinks.size();k++)
+//                    computedDeltaj.add(layers.get(layers.size()-1).neurons.get(0).inLinks.get(k).getWeightAdjustment());
+            //System.out.print(computedDeltaj.toString()+"  ");
             //System.out.print(Arrays.toString(layers.get(layers.size()-1).neurons.get(0).getDelta_j()));
-            System.out.println("  "+pairMap.get(i));
+            //System.out.println("  "+pairMap.get(i));
         }
         //System.out.println();
-        System.out.println(computedDeltai.toString());
-        System.out.println();
+        //System.out.println(computedDeltai.toString());
+        //System.out.println();
     }
 
     public RankList reorder(RankList rankList, int [] sortIndex)
@@ -178,11 +178,11 @@ public class RankNet{
             setInput(rankList);
             ArrayList<ArrayList<Integer> > pairmap= batchFeedForward(rankList,sortIndex);
             ArrayList<ArrayList<Double> > pairWeight = computePairWeight(pairmap);
-            System.out.println(Arrays.toString(sortIndex));
+            //System.out.println(Arrays.toString(sortIndex));
             batchBackPropagate(pairmap,pairWeight);
         }
-        System.out.println();
-        System.out.println();
+        //System.out.println();
+        //System.out.println();
 
     }
 
