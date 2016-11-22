@@ -1,9 +1,13 @@
 package ProductPreprocess;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import Entities.Product;
+import Utils.ApplicationProperties;
 import org.apache.log4j.Logger;
 
 /**
@@ -24,24 +28,45 @@ public class IDFCalculator{
         attributeIDFs= new HashMap<String, Double>();
         descriptionIDFs= new HashMap<String, Double>();
         productCount=0;
-
     }
 
-    public static void updateIdfs(List<Product> productList)
-    {
-        for(Product product:productList)
-        {
-
-            if(!ProductHash.productinHash(product)){
-                updateTitleIdf(product);
-                updateAttributeIdf(product);
-                updateDescriptionIdf(product);
-                logger.info("updated idfs for product with ad_id: "+product.getAd_id());
-                ProductHash.addProducttoHash(product);
-                productCount+=1;
-                logger.info("added product with ad_id: "+product.getAd_id()+" to product hash.");
-
+    public static void calculateIdfs() {
+        List<String> verticals = Arrays.asList(ApplicationProperties.getProperty("VERTICALS").split("~"));
+        BlockingQueue<Product> productQueue = new ArrayBlockingQueue<Product>(10000);
+        new Thread(new ProductProducer(productQueue, verticals)).start();
+        try {
+            while (true) {
+                Product product = productQueue.take();
+                if(product.getAd_id()==Long.MIN_VALUE)
+                    break;
+                updateIdf(product);
             }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        System.out.println("productCount" + productCount);
+        updateAll();
+    }
+
+    public static void updateAll() {
+        for(String key : titleIDFs.keySet())
+            titleIDFs.put(key, productCount / titleIDFs.get(key));
+        for(String key : attributeIDFs.keySet())
+            attributeIDFs.put(key, productCount / attributeIDFs.get(key));
+        for(String key : descriptionIDFs.keySet())
+            descriptionIDFs.put(key, productCount / descriptionIDFs.get(key));
+    }
+
+    public static void updateIdf(Product product)
+    {
+        if(!ProductHash.productinHash(product)) {
+            updateTitleIdf(product);
+            updateAttributeIdf(product);
+            updateDescriptionIdf(product);
+            ProductHash.addProducttoHash(product);
+            productCount+=1;
+//            logger.info("updated idfs for product with ad_id: "+product.getAd_id());
+//            logger.info("added product with ad_id: "+product.getAd_id()+" to product hash.");
         }
     }
 
@@ -53,12 +78,8 @@ public class IDFCalculator{
         for(String word: titleWords)
         {
             if(!titleIDFs.containsKey(word))
-            {
                 titleIDFs.put(word,(double)(0));
-                attributeIDFs.put(word,(double)(0));
-                descriptionIDFs.put(word,(double)(0));
-            }
-            titleIDFs.put(word,(titleIDFs.get(word)*productCount+1.0)/(productCount+1.0));
+            titleIDFs.put(word,titleIDFs.get(word)+1.0);
         }
     }
 
@@ -70,12 +91,8 @@ public class IDFCalculator{
         for(String word: attributeWords)
         {
             if(!attributeIDFs.containsKey(word))
-            {
-                titleIDFs.put(word,(double)(0));
                 attributeIDFs.put(word,(double)(0));
-                descriptionIDFs.put(word,(double)(0));
-            }
-            attributeIDFs.put(word,(attributeIDFs.get(word)*productCount+1.0)/(productCount+1.0));
+            attributeIDFs.put(word,attributeIDFs.get(word)+1.0);
         }
     }
 
@@ -87,16 +104,8 @@ public class IDFCalculator{
         for(String word: descriptionWords)
         {
             if(!descriptionIDFs.containsKey(word))
-            {
-                titleIDFs.put(word,(double)(0));
-                attributeIDFs.put(word,(double)(0));
                 descriptionIDFs.put(word,(double)(0));
-            }
-            descriptionIDFs.put(word,(descriptionIDFs.get(word)*productCount+1.0)/(productCount+1.0));
+            descriptionIDFs.put(word,descriptionIDFs.get(word)+1.0);
         }
     }
-
-
-
-
 }

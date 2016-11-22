@@ -3,6 +3,8 @@ package DataIO;
 import Entities.Product;
 import org.apache.log4j.Logger;
 
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +29,14 @@ public class DatabaseRepository {
 
     public static List<Product> getProductsforUrlKey() {return null;}
 
-    public static List<Product> getProductsforSubCategory(){return null;}
+    public static ResultSetConnectionPair getProductsForVertical(String vertical) {
+        ResultSetConnectionPair resultSetConnectionPair = null;
+        try {
+            resultSetConnectionPair = DatabaseManager.getProductsForVertical(vertical);
+        } catch (Exception ex) {
+            logger.error("ERROR while getting ResultSetConnection Pair for Vertical :  " + vertical + " : " + ex.getMessage());
+        }
+        return resultSetConnectionPair;
+    }
 
 }

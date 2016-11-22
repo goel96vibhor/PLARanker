@@ -1,5 +1,4 @@
 import Utils.ApplicationProperties;
-import ciir.umass.edu.learning.tree.LambdaMART;
 
 import java.util.logging.Logger;
 
