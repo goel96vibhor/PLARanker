@@ -7,7 +7,7 @@ import Utils.DataReader;
 import java.util.ArrayList;
 
 /**
- * Created by aman on 9/27/16.
+ * Created by vibhor.go on 11/18/16.
  */
 
 public class SampleTester
@@ -17,11 +17,11 @@ public class SampleTester
     public static void main(String args[])
     {
 
-        ArrayList<RankList> trainSamples= DataReader.readSamples("MQ2008/Fold1/train.txt");
+        ArrayList<RankList> trainSamples= DataReader.readSamples("MQ2007/Fold1/train.txt");
         System.out.println("read "+trainSamples.size()+" queries from training data");
-        ArrayList<RankList> validationSamples= DataReader.readSamples("MQ2008/Fold1/vali.txt");
+        ArrayList<RankList> validationSamples= DataReader.readSamples("MQ2007/Fold1/vali.txt");
         System.out.println("read "+validationSamples.size()+" queries from validation data");
-        ArrayList<RankList> testSamples= DataReader.readSamples("MQ2008/Fold1/train.txt");
+        ArrayList<RankList> testSamples= DataReader.readSamples("MQ2007/Fold1/test.txt");
         System.out.println("read "+testSamples.size()+" queries from test data");
 
         ArrayList<RankList> trainTest= new ArrayList<RankList>();

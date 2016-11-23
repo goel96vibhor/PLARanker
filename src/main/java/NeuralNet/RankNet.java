@@ -19,7 +19,7 @@ public class RankNet{
     private int inputSize;
     private int outputSize=1;
     protected List<Layer> layers;
-    private int nHiddenLayer=2;
+    private int nHiddenLayer=1;
     private int nHiddenNodeperLayer=10;
     private static int nIterations=100;
     private List<RankList> trainSamples;
@@ -104,7 +104,7 @@ public class RankNet{
             ArrayList<Integer> pairmap_i=new ArrayList<Integer>();
             for(int j=0;j<rankList.listFeatures.size();j++)
             {
-                if((rankList.targetValues.get(i)>rankList.targetValues.get(j))&&sortIndex[i]>sortIndex[j]){
+                if((rankList.targetValues.get(i)>rankList.targetValues.get(j))&&(sortIndex[i]>sortIndex[j])){
                     pairmap_i.add(j);
                 }
             }
@@ -188,7 +188,8 @@ public class RankNet{
 
     public void train()
     {
-        Double score;
+        Double score=0.01;
+        Double prevScore=0.0;
         Double idealScore=0.0;
         RankList predictedrankList;
         for(int i=0;i<nIterations;i++)
@@ -204,7 +205,7 @@ public class RankNet{
                     score+=mrrScorer.score(rankedProducts(rl));
                 }
                 score/=validationSamples.size();
-                System.out.println(score);
+                System.out.println(score+" iteration: "+i);
                 if(score>bestScoreonValidation)
                 {
                     bestScoreonValidation=score;
@@ -212,6 +213,8 @@ public class RankNet{
                 }
             }
             trainIteration();
+            //if(score<prevScore)Neuron.learningRate*=0.8;
+            prevScore=score;
 
         }
         if (validationSamples!=null && (bestScoreonValidation-0.0)>0.000001)loadBestValidationModel();

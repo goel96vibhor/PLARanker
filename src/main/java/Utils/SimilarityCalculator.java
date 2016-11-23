@@ -1,5 +1,6 @@
 package Utils;
 
+import Entities.TermVector;
 import ProductPreprocess.IDFCalculator;
 import ProductPreprocess.WordRetrieval;
 import org.apache.log4j.Logger;
@@ -15,44 +16,28 @@ public class SimilarityCalculator {
 
     private static Logger logger = Logger.getLogger(SimilarityCalculator.class.getName());
 
-    public static HashMap<String, Integer> getTermVecfromString(String text)
+    public static Double calculateDocumentTFIDF(TermVector documentTermVec,TermVector queryTermVec, int docType)
     {
-        List<String> processedTerms= WordRetrieval.retrieveProcessedWords(text);
-        HashMap<String,Integer> termVec= new HashMap<String, Integer>();
-        for(String term: processedTerms){
-            if(termVec.containsKey(term))termVec.put(term,1);
-            else termVec.put(term,termVec.get(term)+1);
-        }
-        return termVec;
-    }
-
-    public static Integer getTermVecTermCount(HashMap<String, Integer> termVec)
-    {
-        int termCount=0;
-        for(String term: termVec.keySet())
-        {
-            termCount+=termVec.get(term);
-        }
-        return termCount;
-    }
-
-    public static Double calculateDocumentTFIDF(HashMap<String, Integer> documentTermVec,HashMap<String,Integer> queryTermVec, int documentTerms)
-    {
-
+        HashMap<String, Double> docTypeIdfs= null;
+        if(docType==0)docTypeIdfs= IDFCalculator.titleIDFs;
+        else if (docType==1)docTypeIdfs=IDFCalculator.attributeIDFs;
+        else docTypeIdfs=IDFCalculator.descriptionIDFs;
         Double score= 0.0;
         Double termidf;
 
         Integer queryTerms=0;
-        for(String term:queryTermVec.keySet())
+        for(String term:queryTermVec.getTermFreq().keySet())
         {
 
-            queryTerms+=queryTermVec.get(term);
-            if(documentTermVec.containsKey(term)){
-                termidf=Math.log10(((double)IDFCalculator.productCount)/((double)IDFCalculator.titleIDFs.get(term)));
-                score+=((double)documentTermVec.get(term)*queryTermVec.get(term))*termidf;
+            queryTerms+=queryTermVec.getTermFreq().get(term);
+            if(documentTermVec.getTermFreq().containsKey(term)){
+                if (docTypeIdfs.containsKey(term))
+                    termidf=Math.log10(docTypeIdfs.get(term));
+                else termidf=0.0d;
+                score+=(documentTermVec.getTermFreq().get(term)*queryTermVec.getTermFreq().get(term))*termidf;
             }
         }
-        score/=((double)documentTerms*queryTerms);
+        score/=(documentTermVec.getNorm()*queryTermVec.getNorm());
         return score;
     }
 

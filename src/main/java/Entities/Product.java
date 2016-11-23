@@ -29,56 +29,41 @@ public class Product {
     private boolean popularBrand;
     private double expectedRPM;
     private Features features;
-    private HashMap<String, Integer> titleTermVec;
-    private HashMap<String, Integer> attributeTermVec;
-    private HashMap<String, Integer> descriptionTermVec;
-    private int titleLength;
-    private int descriptionLength;
-    private int attributeslength;
+    private TermVector titleTermVec;
+    private TermVector attributeTermVec;
+    private TermVector descriptionTermVec;
     private static Logger logger = Logger.getLogger(Product.class.getName());
 
-    public int getTitleLength() {
-        return titleLength;
-    }
 
-    public int getDescriptionLength() {
-        return descriptionLength;
-    }
 
-    public int getAttributeslength() {
-        return attributeslength;
-    }
-
-    public HashMap<String, Integer> getTitleTermVec() {
+    public TermVector getTitleTermVec() {
         return titleTermVec;
     }
 
-    public HashMap<String, Integer> getAttributeTermVec() {
+    public TermVector getAttributeTermVec() {
         return attributeTermVec;
     }
 
-    public HashMap<String, Integer> getDescriptionTermVec() {
+    public TermVector getDescriptionTermVec() {
         return descriptionTermVec;
     }
 
     public void calculateProductTermVecs()
     {
         logger.info("calculating term vectors for product with id: "+getAd_id());
-        titleTermVec= SimilarityCalculator.getTermVecfromString(title);
-        descriptionTermVec= SimilarityCalculator.getTermVecfromString(description);
-        attributeTermVec= SimilarityCalculator.getTermVecfromString(attributes);
-        titleLength= SimilarityCalculator.getTermVecTermCount(titleTermVec);
-        attributeslength= SimilarityCalculator.getTermVecTermCount(attributeTermVec);
-        descriptionLength= SimilarityCalculator.getTermVecTermCount(descriptionTermVec);
+        titleTermVec= new TermVector(title);
+        descriptionTermVec= new TermVector(description);
+        attributeTermVec= new TermVector(attributes);
     }
 
     public void calculateFeatures(String query)
     {
         logger.info("finding features for query \""+ query+"\" and product with id: "+getAd_id());
-        HashMap<String, Integer> queryTermVec= SimilarityCalculator.getTermVecfromString(query);
-        features.setTitleTFIDF(SimilarityCalculator.calculateDocumentTFIDF(getTitleTermVec(), queryTermVec, getTitleLength()));
-        features.setAttributeTFIDF(SimilarityCalculator.calculateDocumentTFIDF(getAttributeTermVec(), queryTermVec, getAttributeslength()));
-        features.setDescriptionTFIDF(SimilarityCalculator.calculateDocumentTFIDF(getDescriptionTermVec(), queryTermVec, getDescriptionLength()));
+        TermVector queryTermVec= new TermVector(query);
+        calculateProductTermVecs();
+        features.setTitleTFIDF(SimilarityCalculator.calculateDocumentTFIDF(getTitleTermVec(), queryTermVec, 0));
+        features.setAttributeTFIDF(SimilarityCalculator.calculateDocumentTFIDF(getAttributeTermVec(), queryTermVec, 1));
+        features.setDescriptionTFIDF(SimilarityCalculator.calculateDocumentTFIDF(getDescriptionTermVec(), queryTermVec, 2));
     }
 
     public String getTitle() {
