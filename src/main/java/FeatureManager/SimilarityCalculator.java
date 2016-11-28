@@ -1,12 +1,10 @@
-package Utils;
+package FeatureManager;
 
 import Entities.TermVector;
 import ProductPreprocess.IDFCalculator;
-import ProductPreprocess.WordRetrieval;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by vibhor.go on 10/17/16.

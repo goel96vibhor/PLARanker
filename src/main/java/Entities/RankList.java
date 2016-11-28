@@ -1,6 +1,6 @@
 package Entities;
 
-import Utils.FeatureManager;
+import FeatureManager.FeatureInitializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ public class RankList {
     public List<Product> ads=new ArrayList<Product>();
     public ArrayList<ArrayList<Double>> listFeatures= new ArrayList<ArrayList<Double>>();
     public ArrayList<Integer> targetValues=new ArrayList<Integer>();
-    private static FeatureManager featureManager= new FeatureManager();
+    private static FeatureInitializer featureInitializer = new FeatureInitializer();
     protected String viewid=null;
 
     public RankList(){}
@@ -23,9 +23,9 @@ public class RankList {
     {
         this.viewid=viewid;
         this.ads=ads;
-        for(Product product:ads)listFeatures.add(featureManager.getFeatureArray(product));
+        for(Product product:ads)listFeatures.add(featureInitializer.getFeatureArray(product));
         for(Product product:ads)targetValues.add(product.getClicked());
-        featureManager.normalize(listFeatures);
+        featureInitializer.normalize(listFeatures);
 
     }
 

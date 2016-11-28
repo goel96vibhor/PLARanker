@@ -1,8 +1,6 @@
 package Entities;
 
-import java.util.HashMap;
-
-import Utils.SimilarityCalculator;
+import FeatureManager.SimilarityCalculator;
 import org.apache.log4j.Logger;
 
 

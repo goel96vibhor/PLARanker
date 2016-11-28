@@ -1,14 +1,9 @@
 package NeuralNet;
 
 import Entities.RankList;
-import Utils.FeatureManager;
 import org.apache.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.Serializable;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

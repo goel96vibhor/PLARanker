@@ -1,4 +1,4 @@
-package Utils;
+package FeatureManager;
 import Entities.Product;
 import Utils.ApplicationProperties;
 import Entities.Features;
@@ -11,12 +11,12 @@ import Entities.RankList;
  * Created by vibhor.go on 11/11/16.
  */
 
-public class FeatureManager {
+public class FeatureInitializer {
 
     public static int featuresToUse[];
     public static int featureCount=3;
 
-    public FeatureManager() {
+    public FeatureInitializer() {
         String features=ApplicationProperties.getProperty("FEATURES_TO_USE");
         List<String> featureIds= new ArrayList<String>();
         if(features!=null&&features!="")featureIds= Arrays.asList(features.split("~"));
