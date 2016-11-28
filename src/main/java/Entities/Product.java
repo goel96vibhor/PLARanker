@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
  */
 public class Product {
     private long ad_id;
-    private long urlKey;
+    private String viewId;
     private String title;
     private String publisherUrl;
     private int adPosition;
@@ -20,8 +20,7 @@ public class Product {
     private double price;
     private double originalPrice;
     private String description;
-    private String merchant_name;
-    private String manufacturer;
+    private String brand;
     private String attributes;
     private double sellerRating;
     private boolean popularBrand;
@@ -152,20 +151,12 @@ public class Product {
         this.description = description;
     }
 
-    public String getMerchant_name() {
-        return merchant_name;
+    public String getBrand() {
+        return brand;
     }
 
-    public void setMerchant_name(String merchant_name) {
-        this.merchant_name = merchant_name;
-    }
-
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public String getAttributes() {
@@ -208,11 +199,11 @@ public class Product {
         this.ad_id = ad_id;
     }
 
-    public long getUrlKey() {
-        return urlKey;
+    public String getViewId() {
+        return viewId;
     }
 
-    public void setUrlKey(long urlKey) {
-        this.urlKey = urlKey;
+    public void setViewId(String viewId) {
+        this.viewId = viewId;
     }
 }

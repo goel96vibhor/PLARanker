@@ -16,26 +16,34 @@ import java.util.concurrent.BlockingQueue;
 public class ProductProducer implements Runnable {
     private BlockingQueue<Product> productQueue;
     private List<String> verticals;
+    private int providerId;
 
-    public ProductProducer(BlockingQueue<Product> productQueue, List<String> verticals) {
+    public ProductProducer(BlockingQueue<Product> productQueue, List<String> verticals, int providerId) {
         this.productQueue = productQueue;
         this.verticals = verticals;
+        this.providerId = providerId;
     }
 
     public void run() {
         for (String vertical : verticals) {
-            ResultSetConnectionPair resultSetConnectionPair = DatabaseRepository.getInstance().getProductsForVertical(vertical);
+            ResultSetConnectionPair resultSetConnectionPair = DatabaseRepository.getInstance().getProductsForVertical(vertical, providerId);
             try {
                 ResultSet resultSet = resultSetConnectionPair.getResultSet();
+                int count = 0;
                 while (resultSet.next()) {
                     Product product = ResultSetParser.getNextProduct(resultSet);
                     productQueue.add(product);
+                    count++;
+                    if(count==10)
+                        break;
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             finally {
+                System.out.println("closing rspair");
                 resultSetConnectionPair.closeBoth();
+                System.out.println("closed");
             }
         }
         Product product = new Product();
