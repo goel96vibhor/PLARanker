@@ -23,14 +23,21 @@ public class IDFCalculator{
     public static HashMap<String, Double> titleIDFs ;
     public static HashMap<String, Double> attributeIDFs ;
     public static HashMap<String, Double> descriptionIDFs ;
+    public static HashMap<String, Double> wholeDocIDFs;
     public static HashSet<Long> productSet;
     private static Logger logger = Logger.getLogger(IDFCalculator.class.getName());
+    public static Double avgTitleLength=0.0;
+    public static Double avgAttributeLength=0.0;
+    public static Double avgDescriptionLength=0.0;
+    public static Double avgwholeDocLength=0.0;
+
 
     public IDFCalculator()
     {
         titleIDFs= new HashMap<String, Double>();
         attributeIDFs= new HashMap<String, Double>();
         descriptionIDFs= new HashMap<String, Double>();
+        wholeDocIDFs=new HashMap<String, Double>();
         productCount=0;
         productSet = new HashSet<Long>();
     }
@@ -57,12 +64,28 @@ public class IDFCalculator{
     }
 
     public static void updateAll() {
+        avgAttributeLength=avgDescriptionLength=avgTitleLength=avgwholeDocLength=0.0;
         for(String key : titleIDFs.keySet())
-            titleIDFs.put(key, productCount / titleIDFs.get(key));
+        {
+                titleIDFs.put(key, productCount / titleIDFs.get(key));
+                avgTitleLength+=1.0/titleIDFs.get(key);
+        }
         for(String key : attributeIDFs.keySet())
+        {
             attributeIDFs.put(key, productCount / attributeIDFs.get(key));
+            avgAttributeLength+=1.0/attributeIDFs.get(key);
+        }
+
         for(String key : descriptionIDFs.keySet())
+        {
             descriptionIDFs.put(key, productCount / descriptionIDFs.get(key));
+            avgDescriptionLength+=1.0/descriptionIDFs.get(key);
+        }
+        for(String key : wholeDocIDFs.keySet())
+        {
+            wholeDocIDFs.put(key, productCount / wholeDocIDFs.get(key));
+            avgwholeDocLength+=1.0/wholeDocIDFs.get(key);
+        }
     }
 
     public static void updateIdf(Product product)
@@ -87,6 +110,9 @@ public class IDFCalculator{
         {
             if(!titleIDFs.containsKey(word))
                 titleIDFs.put(word,(double)(0));
+            if(!wholeDocIDFs.containsKey(word))
+                wholeDocIDFs.put(word,(double)(0));
+            wholeDocIDFs.put(word,wholeDocIDFs.get(word)+1.0);
             titleIDFs.put(word,titleIDFs.get(word)+1.0);
         }
     }
@@ -101,6 +127,9 @@ public class IDFCalculator{
             if(!attributeIDFs.containsKey(word))
                 attributeIDFs.put(word,(double)(0));
             attributeIDFs.put(word,attributeIDFs.get(word)+1.0);
+            if(!wholeDocIDFs.containsKey(word))
+                wholeDocIDFs.put(word,(double)(0));
+            wholeDocIDFs.put(word,wholeDocIDFs.get(word)+1.0);
         }
     }
 
@@ -114,6 +143,28 @@ public class IDFCalculator{
             if(!descriptionIDFs.containsKey(word))
                 descriptionIDFs.put(word,(double)(0));
             descriptionIDFs.put(word,descriptionIDFs.get(word)+1.0);
+            if(!wholeDocIDFs.containsKey(word))
+                wholeDocIDFs.put(word,(double)(0));
+            wholeDocIDFs.put(word,wholeDocIDFs.get(word)+1.0);
         }
     }
+
+    public static HashMap<String, Double> getDocTypeIdfs(int docType)
+    {
+        HashMap<String, Double> docTypeIdfs= null;
+        if(docType==0)docTypeIdfs= IDFCalculator.titleIDFs;
+        else if (docType==1)docTypeIdfs=IDFCalculator.attributeIDFs;
+        else if (docType==2)docTypeIdfs=IDFCalculator.descriptionIDFs;
+        else docTypeIdfs=IDFCalculator.wholeDocIDFs;
+        return docTypeIdfs;
+    }
+
+    public static Double getavgDocTypeLength(int docType)
+    {
+        if(docType==0)return IDFCalculator.avgTitleLength;
+        else if (docType==1)return IDFCalculator.avgAttributeLength;
+        else if (docType==2)return IDFCalculator.avgDescriptionLength;
+        else return IDFCalculator.avgwholeDocLength;
+    }
+
 }
