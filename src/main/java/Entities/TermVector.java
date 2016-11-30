@@ -29,7 +29,7 @@ public class TermVector
         norm=0.0;
         for (String term:termFreq.keySet())
         {
-            termFreq.put(term, termFreq.get(term)/length);
+            //termFreq.put(term, termFreq.get(term)/length);
             norm+=Math.pow(termFreq.get(term),2);
         }
         norm=Math.sqrt(norm);

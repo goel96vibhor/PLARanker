@@ -28,7 +28,7 @@ public class LMIRCalculator
         else lambda=lambda_long;
         for(String term:queryTermVec.getTermFreq().keySet())
         {
-            if(docTypeIdfs.containsKey(term)&&docTypeIdfs.get(term)!=0)
+            if(docTypeIdfs.containsKey(term)&&docTypeIdfs.get(term)>0.00001)
                 collTermCount=IDFCalculator.productCount/docTypeIdfs.get(term);
             else
                 collTermCount=IDFCalculator.productCount*avgDocTypelength/docTypeIdfs.size();
@@ -72,7 +72,7 @@ public class LMIRCalculator
         Double pTermColl, docTermCount,termScore;
         for(String term:queryTermVec.getTermFreq().keySet())
         {
-            if(docTypeIdfs.containsKey(term)&&docTypeIdfs.get(term)!=0)
+            if(docTypeIdfs.containsKey(term)&&docTypeIdfs.get(term)>0.00001)
                 pTermColl=1.0/(docTypeIdfs.get(term)*avgDocTypelength);
             else pTermColl=1.0/docTypeIdfs.size();
             if (documentTermVec.getTermFreq().containsKey(term))

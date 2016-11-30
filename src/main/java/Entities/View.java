@@ -32,4 +32,17 @@ public class View {
     public void setAds(List<Product> ads) {
         this.ads = ads;
     }
+
+    public void calculateFeaturesforView()
+    {
+        for(Product product:ads)
+        {
+            product.calculateFeatures(query);
+        }
+    }
+
+    public RankList getRankListforView()
+    {
+        return new RankList(ads,viewId);
+    }
 }

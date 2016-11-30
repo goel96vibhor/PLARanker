@@ -14,7 +14,7 @@ import Entities.RankList;
 public class FeatureInitializer {
 
     public static int featuresToUse[];
-    public static int featureCount=3;
+    public static int featureCount=26;
 
     public FeatureInitializer() {
         String features=ApplicationProperties.getProperty("FEATURES_TO_USE");

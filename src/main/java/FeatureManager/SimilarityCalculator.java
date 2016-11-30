@@ -21,18 +21,26 @@ public class SimilarityCalculator {
     {
         HashMap<String, Double> docTypeIdfs= IDFCalculator.getDocTypeIdfs(docType);
         Double score= 0.0;
-        Double termidf;
-
+        Double termIdf;
+        Double termDocTypeCount;
         Integer queryTerms=0;
+        Double termScore=0.0;
         for(String term:queryTermVec.getTermFreq().keySet())
         {
 
             //queryTerms+=queryTermVec.getTermFreq().get(term);
             if(documentTermVec.getTermFreq().containsKey(term)){
-                if (docTypeIdfs.containsKey(term))
-                    termidf=Math.log10(docTypeIdfs.get(term));
-                else termidf=0.0d;
-                score+=(documentTermVec.getTermFreq().get(term)*queryTermVec.getTermFreq().get(term))*termidf;
+                if(docTypeIdfs.containsKey(term))
+                {
+                    termDocTypeCount=IDFCalculator.productCount/docTypeIdfs.get(term);
+                    termIdf=(IDFCalculator.productCount-termDocTypeCount+0.5)/(termDocTypeCount+0.5);
+                    termIdf=Math.log10(termIdf);
+                }
+                else termIdf=0.0d;
+                termScore=(documentTermVec.getTermFreq().get(term));
+                termScore*=(queryTermVec.getTermFreq().get(term));
+                termScore*=termIdf;
+                score+=termScore;
             }
         }
         score/=(documentTermVec.getNorm()*queryTermVec.getNorm());
@@ -46,12 +54,16 @@ public class SimilarityCalculator {
         Double score=0.0;
         Double termIdf=0.0;
         Double termScore=0.0;
+        Double termDocTypeCount=0.0;
         for(String term:queryTermVec.getTermFreq().keySet())
         {
             if(documentTermVec.getTermFreq().containsKey(term)){
                 if(docTypeIdfs.containsKey(term))
-                    termIdf=Math.log10(docTypeIdfs.get(term));
-
+                {
+                    termDocTypeCount=IDFCalculator.productCount/docTypeIdfs.get(term);
+                    termIdf=(IDFCalculator.productCount-termDocTypeCount+0.5)/(termDocTypeCount+0.5);
+                    termIdf=Math.log10(termIdf);
+                }
                 else termIdf=0.0;
                 termScore=(termIdf*documentTermVec.getTermFreq().get(term)*(k1+1.0));
                 termScore/=(documentTermVec.getTermFreq().get(term)+k1*(1-b+b*(documentTermVec.getLength()/avgDocTypelength)));
