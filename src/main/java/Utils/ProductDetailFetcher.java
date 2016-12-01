@@ -215,7 +215,7 @@ public class ProductDetailFetcher {
                     product.put("attribute_text", productJson.get("attribute_text"));
                     product.put("seller_rating", productJson.get("seller_rating"));
                     product.put("expected_rpm", productJson.get("expected_rpm"));
-                    productMap.put(productId, productJson.toString());
+                    productMap.put(productId, product.toString());
                 }
                 total += hits;
             }

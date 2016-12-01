@@ -12,9 +12,10 @@ public class View {
     private String viewId;
     private List<Product> ads;
 
-    public View(String viewId, List<Product> ads) {
+    public View(String viewId, List<Product> ads, String query) {
         this.viewId = viewId;
         this.ads = ads;
+        this.query = query;
     }
 
     public String getViewId() {
