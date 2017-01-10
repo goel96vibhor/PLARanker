@@ -25,6 +25,9 @@ public class SimilarityCalculator {
         Double termDocTypeCount;
         Integer queryTerms=0;
         Double termScore=0.0;
+//        if(docType==2) System.out.println("querynorm docnorm querylength doclength: "+queryTermVec.getNorm()+" "
+//                +documentTermVec.getNorm()+" "+queryTermVec.getLength()+" "+documentTermVec.getLength());
+        if(documentTermVec.getLength()<0.99)return 0.0;
         for(String term:queryTermVec.getTermFreq().keySet())
         {
 
@@ -32,17 +35,23 @@ public class SimilarityCalculator {
             if(documentTermVec.getTermFreq().containsKey(term)){
                 if(docTypeIdfs.containsKey(term))
                 {
+                    //if(docType==3)System.out.print(term);
                     termDocTypeCount=IDFCalculator.productCount/docTypeIdfs.get(term);
-                    termIdf=(IDFCalculator.productCount-termDocTypeCount+0.5)/(termDocTypeCount+0.5);
+                    //if (docTypeIdfs.get(term)==0)System.out.print("yes");
+                    //if(docType==3)System.out.print(docTypeIdfs.get(term));
+                    termIdf=(IDFCalculator.productCount)/(termDocTypeCount);
+                    //if(docType==3)System.out.println(" "+termIdf);
                     termIdf=Math.log10(termIdf);
                 }
                 else termIdf=0.0d;
                 termScore=(documentTermVec.getTermFreq().get(term));
                 termScore*=(queryTermVec.getTermFreq().get(term));
                 termScore*=termIdf;
+                //if(docType==3)System.out.print(term +" "+termScore+" ");
                 score+=termScore;
             }
         }
+        //if(docType==3)System.out.println("     "+ score);
         score/=(documentTermVec.getNorm()*queryTermVec.getNorm());
         return score;
     }
@@ -55,13 +64,14 @@ public class SimilarityCalculator {
         Double termIdf=0.0;
         Double termScore=0.0;
         Double termDocTypeCount=0.0;
+        if(documentTermVec.getLength()<0.99)return 0.0;
         for(String term:queryTermVec.getTermFreq().keySet())
         {
             if(documentTermVec.getTermFreq().containsKey(term)){
                 if(docTypeIdfs.containsKey(term))
                 {
                     termDocTypeCount=IDFCalculator.productCount/docTypeIdfs.get(term);
-                    termIdf=(IDFCalculator.productCount-termDocTypeCount+0.5)/(termDocTypeCount+0.5);
+                    termIdf=(IDFCalculator.productCount)/(termDocTypeCount);
                     termIdf=Math.log10(termIdf);
                 }
                 else termIdf=0.0;

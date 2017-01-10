@@ -34,7 +34,7 @@ public class DataReader{
              String lastID = "";
              while((content = in.readLine()) != null)
              {
-
+                 //System.out.println(content);
                  content = content.trim();
                  if(content.length() == 0)
                      continue;
@@ -50,6 +50,7 @@ public class DataReader{
                  {
                      countEntries++;
                      samples.add(new RankList(targetValue,featureList,lastID));
+                     System.out.println(countEntries);
                      targetValue= new ArrayList<Integer>();
                      featureList= new ArrayList<ArrayList<Double>>();
 
@@ -57,7 +58,9 @@ public class DataReader{
                      logger.info("read qid "+lastID);
                  }
                  lastID=getValue(pairs[1]);
-                 targetValue.add(Integer.parseInt(pairs[0]));
+                 System.out.println(lastID);
+                 if(Integer.parseInt(pairs[0])>2)targetValue.add(1);
+                 else targetValue.add(Integer.parseInt(pairs[0]));
 
                  featureList.add(parseContent(pairs));
 

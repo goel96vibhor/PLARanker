@@ -177,7 +177,7 @@ public class Features{
         featureList.add(price);
         featureList.add(discount);
         featureList.add(sellerRating);
-        featureList.add(popularBrand);
+        //featureList.add(popularBrand);
         featureList.add(expectedRPM);
 
         return featureList;

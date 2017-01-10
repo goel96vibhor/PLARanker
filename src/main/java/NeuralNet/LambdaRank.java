@@ -13,9 +13,9 @@ public class LambdaRank extends RankNet
 {
     public LambdaRank(){}
 
-    public LambdaRank(List<RankList> trainSamples, List<RankList> validationSamples, int inputSize, int outputSize)
+    public LambdaRank(List<RankList> trainSamples, List<RankList> validationSamples,List<RankList> testSamples,int inputSize, int outputSize)
     {
-        super(trainSamples,validationSamples,inputSize,outputSize);
+        super(trainSamples,validationSamples,testSamples,inputSize,outputSize);
     }
 
     public RankList reorder(RankList rl)

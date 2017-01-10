@@ -3,6 +3,7 @@ package NeuralNet;
 import Entities.RankList;
 import org.apache.log4j.Logger;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,19 +17,22 @@ public class RankNet{
     protected List<Layer> layers;
     private int nHiddenLayer=1;
     private int nHiddenNodeperLayer=10;
-    private static int nIterations=100;
+    private static int nIterations=200;
     private List<RankList> trainSamples;
     private List<RankList> validationSamples;
+    private List<RankList> testSamples;
     protected double bestScoreonValidation=0.0;
     private ArrayList<ArrayList<Double>> bestValidationModel= new ArrayList<ArrayList<Double>>();
     protected static Scorer mrrScorer= new MRRScorer();
+    private static DecimalFormat doubleFormat = new DecimalFormat("#.0000");
     private static Logger logger = Logger.getLogger(RankNet.class.getName());
-    public RankNet(List<RankList> trainSamples, List<RankList> validationSamples, int inputSize, int outputSize)
+    public RankNet(List<RankList> trainSamples, List<RankList> validationSamples,List<RankList> testSamples, int inputSize, int outputSize)
     {
         this.inputSize=inputSize;
         this.outputSize=outputSize;
         this.trainSamples= trainSamples;
         this.validationSamples=validationSamples;
+        this.testSamples=testSamples;
         this.layers= new ArrayList<Layer>();
     }
 
@@ -119,7 +123,7 @@ public class RankNet{
         ArrayList<Double> computedDeltaj= new ArrayList<Double>();
         for(int i=0;i<pairMap.size();i++)
         {
-            //computedDeltaj= new ArrayList<Double>();
+            computedDeltaj= new ArrayList<Double>();
             Layer outputLayer= layers.get(layers.size()-1);
             for(Neuron neuron: outputLayer.neurons){
                 neuron.computeOuterDeltas(pairMap, pairWeight, i);
@@ -132,15 +136,16 @@ public class RankNet{
             {
                 layers.get(j).updateWeight(pairMap,i);
             }
-//            computedDeltai.add(layers.get(layers.size()-1).neurons.get(0).getDelta_i());
-//            for(int k=0;k<layers.get(layers.size()-1).neurons.get(0).inLinks.size();k++)
-//                    computedDeltaj.add(layers.get(layers.size()-1).neurons.get(0).inLinks.get(k).getWeightAdjustment());
+            computedDeltai.add(layers.get(layers.size()-1).neurons.get(0).getDelta_i());
+            for(int k=0;k<layers.get(layers.size()-1).neurons.get(0).inLinks.size();k++)
+                    computedDeltaj.add(layers.get(layers.size()-1).neurons.get(0).inLinks.get(k).getWeightAdjustment());
             //System.out.print(computedDeltaj.toString()+"  ");
             //System.out.print(Arrays.toString(layers.get(layers.size()-1).neurons.get(0).getDelta_j()));
             //System.out.println("  "+pairMap.get(i));
         }
         //System.out.println();
         //System.out.println(computedDeltai.toString());
+
         //System.out.println();
     }
 
@@ -165,7 +170,7 @@ public class RankNet{
 
         for(RankList rl:trainSamples)
         {
-
+            //if(!rl.getViewid().equalsIgnoreCase("B28EE0B31C03D224A3ECE63F1BEBC096"))continue;
             ArrayList<Double> scoresOnModel=eval(rl);
             int [] sortIndex=getSortedIndices(scoresOnModel, false);
             RankList rankList= reorder(rl,sortIndex);
@@ -175,6 +180,12 @@ public class RankNet{
             ArrayList<ArrayList<Double> > pairWeight = computePairWeight(pairmap);
             //System.out.println(Arrays.toString(sortIndex));
             batchBackPropagate(pairmap,pairWeight);
+//            for(ArrayList<Double> doubleArrayList:rankList.listFeatures)
+//            System.out.println(doubleArrayList);
+//            System.out.println(rankList.targetValues);
+//            System.out.println(rl.getViewid());
+//            System.out.println();
+//            System.out.println();
         }
         //System.out.println();
         //System.out.println();
@@ -184,21 +195,28 @@ public class RankNet{
     public void train()
     {
         Double score=0.01;
+        Double esoriginalScore=0.0;
         Double prevScore=0.0;
         Double idealScore=0.0;
         RankList predictedrankList;
         for(int i=0;i<nIterations;i++)
         {
 
+
             if(validationSamples!=null)
             {
                 score=0.0;
+                esoriginalScore=0.0;
                 for(RankList rl:validationSamples)
                 {
+
                     ArrayList<Double> scorefromNetwork=eval(rankedProducts(rl));
                     //System.out.println(scorefromNetwork.toString());
+                    if (i==0)esoriginalScore+=mrrScorer.score(rl);
                     score+=mrrScorer.score(rankedProducts(rl));
                 }
+                if(i==0)esoriginalScore/=validationSamples.size();
+                if(i==0)System.out.println("esoriginalScore: "+esoriginalScore);
                 score/=validationSamples.size();
                 System.out.println(score+" iteration: "+i);
                 if(score>bestScoreonValidation)
@@ -207,6 +225,10 @@ public class RankNet{
                     saveBestValidationModel();
                 }
             }
+            Layer outputLayer=layers.get(layers.size()-1);
+            for(Synapse synapse:outputLayer.neurons.get(0).inLinks)
+                System.out.print(String.format("%.4f",synapse.getWeight())+" ");
+            System.out.println();
             trainIteration();
             //if(score<prevScore)Neuron.learningRate*=0.8;
             prevScore=score;
@@ -241,9 +263,28 @@ public class RankNet{
                 idealScore+=mrrScorer.getIdealScore(rankList);
             }
             score/=validationSamples.size();
-            idealScore/=trainSamples.size();
+            idealScore/=validationSamples.size();
             logger.info("Score on validation data "+ score);
             logger.info("Ideal Score on validation data "+idealScore);
+        }
+
+        if (testSamples!=null)
+        {
+            score=0.0;
+            idealScore=0.0;
+            esoriginalScore=0.0;
+            for (RankList rankList:testSamples)
+            {
+                score+=mrrScorer.score(rankedProducts(rankList));
+                esoriginalScore+=mrrScorer.score(rankList);
+                idealScore+=mrrScorer.getIdealScore(rankList);
+            }
+            esoriginalScore/=testSamples.size();
+            score/=testSamples.size();
+            idealScore/=testSamples.size();
+            logger.info("network Score on test data "+ score);
+            logger.info("elasticsearch score on test data "+esoriginalScore);
+            logger.info("ideal Score on test data "+idealScore);
         }
 
     }
@@ -357,7 +398,7 @@ public class RankNet{
         this.nHiddenNodeperLayer = nHiddenNodeperLayer;
     }
 
-    public void setMrrScorer(Scorer scorer)
+    public void setScorer(Scorer scorer)
     {
         mrrScorer=scorer;
     }

@@ -17,5 +17,8 @@ public class PLARanker {
     }
 
     public static void main(String[] args) {
+        RankerTrainer rankerTrainer= new RankerTrainer();
+        rankerTrainer.prepareData();
+        rankerTrainer.trainModel();
     }
 }

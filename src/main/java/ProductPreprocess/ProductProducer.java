@@ -32,10 +32,21 @@ public class ProductProducer implements Runnable {
                 int count = 0;
                 while (resultSet.next()) {
                     Product product = ResultSetParser.getNextProduct(resultSet);
-                    productQueue.add(product);
                     count++;
-                    if(count==10)
-                        break;
+                    System.out.println(count+ " count");
+                    productQueue.add(product);
+
+                   if(count==10000)
+                   {
+                       count=0;
+                       try {
+                           Thread.sleep(1000);
+                       }
+                       catch (InterruptedException iex)
+                       {
+                            iex.printStackTrace();
+                       }
+                   }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

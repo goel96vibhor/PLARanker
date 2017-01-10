@@ -1,5 +1,9 @@
 package ProductPreprocess;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,7 +21,7 @@ import javax.print.attribute.IntegerSyntax;
         * Created by vibhor.go on 10/14/16.
 */
 
-public class IDFCalculator{
+public class IDFCalculator implements Externalizable{
 
     public static int productCount;
     public static HashMap<String, Double> titleIDFs ;
@@ -32,7 +36,7 @@ public class IDFCalculator{
     public static Double avgwholeDocLength=0.0;
 
 
-    public IDFCalculator()
+    static
     {
         titleIDFs= new HashMap<String, Double>();
         attributeIDFs= new HashMap<String, Double>();
@@ -45,13 +49,16 @@ public class IDFCalculator{
     public static void calculateIdfs() {
         List<String> verticals = Arrays.asList(ApplicationProperties.getProperty("VERTICALS").split("~"));
         int providerId = Integer.parseInt(ApplicationProperties.getProperty("PROVIDER_ID"));
-        BlockingQueue<Product> productQueue = new ArrayBlockingQueue<Product>(10000);
+        BlockingQueue<Product> productQueue = new ArrayBlockingQueue<Product>(100000);
         new Thread(new ProductProducer(productQueue, verticals, providerId)).start();
+        int count=0;
         try {
             while (true) {
                 Product product = productQueue.take();
-                System.out.println(product.getTitle());
-                System.out.println(product.getAd_id());
+//                System.out.print(product.getTitle()+" ");
+//                System.out.println(product.getAd_id());
+                count++;
+                System.out.println(count);
                 if(product.getAd_id()==Long.MIN_VALUE)
                     break;
                 updateIdf(product);
@@ -96,6 +103,7 @@ public class IDFCalculator{
             updateAttributeIdf(product);
             updateDescriptionIdf(product);
             productCount+=1;
+            //System.out.println(productCount);
 //            logger.info("updated idfs for product with ad_id: "+product.getAd_id());
 //            logger.info("added product with ad_id: "+product.getAd_id()+" to product hash.");
         }
@@ -105,7 +113,7 @@ public class IDFCalculator{
     {
         String title=product.getTitle();
         List<String> titleWords= WordRetrieval.retrieveProcessedWords(title);
-        logger.info("retrieved processed description words for product with id: "+product.getAd_id());
+        logger.info("retrieved processed title words for product with id: "+product.getAd_id());
         for(String word: titleWords)
         {
             if(!titleIDFs.containsKey(word))
@@ -165,6 +173,32 @@ public class IDFCalculator{
         else if (docType==1)return IDFCalculator.avgAttributeLength;
         else if (docType==2)return IDFCalculator.avgDescriptionLength;
         else return IDFCalculator.avgwholeDocLength;
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(productCount);
+        out.writeObject(titleIDFs);
+        out.writeObject(attributeIDFs);
+        out.writeObject(descriptionIDFs);
+        out.writeObject(wholeDocIDFs);
+        out.writeObject(productSet);
+        out.writeDouble(avgTitleLength);
+        out.writeDouble(avgAttributeLength);
+        out.writeDouble(avgDescriptionLength);
+        out.writeDouble(avgwholeDocLength);
+    }
+
+    public void readExternal(ObjectInput in) throws ClassNotFoundException, IOException {
+        productCount=in.readInt();
+        titleIDFs=(HashMap<String ,Double>)in.readObject();
+        attributeIDFs=(HashMap<String ,Double>)in.readObject();
+        descriptionIDFs=(HashMap<String ,Double>)in.readObject();
+        wholeDocIDFs=(HashMap<String ,Double>)in.readObject();
+        productSet=(HashSet<Long>)in.readObject();
+        avgTitleLength=in.readDouble();
+        avgAttributeLength=in.readDouble();
+        avgDescriptionLength=in.readDouble();
+        avgwholeDocLength=in.readDouble();
     }
 
 }

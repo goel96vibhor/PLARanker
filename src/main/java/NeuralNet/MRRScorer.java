@@ -20,7 +20,8 @@ public class MRRScorer implements Scorer
            if(rankList.targetValues.get(i)==1)
            {
                score+=1.0/(Double)(i+1.0);
-               count=+1.0;
+               //break;
+               count+=1.0;
            }
        }
         return score/count;
@@ -53,7 +54,7 @@ public class MRRScorer implements Scorer
         {
             if(rankList.targetValues.get(i)==1)count++;
         }
-        for (int i=1;i<count;i++)score+=1.0/(Double)(i+0.0);
+        for (int i=1;i<=count;i++)score+=1.0/(Double)(i+0.0);
         score/=(Double)(count+0.0);
         return score;
     }

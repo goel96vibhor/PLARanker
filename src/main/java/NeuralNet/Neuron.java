@@ -17,7 +17,7 @@ public class Neuron {
     protected ArrayList<Double> outputs= new ArrayList<Double>();
     protected List<Synapse> inLinks= new ArrayList<Synapse>();
     protected List<Synapse> outlinks= new ArrayList<Synapse>();
-    public static Double learningRate= 0.00005;
+    public static Double learningRate= 0.0005;
     private Double delta_i;
     private Double delta_j[];
 

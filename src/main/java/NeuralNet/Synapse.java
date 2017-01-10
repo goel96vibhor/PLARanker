@@ -34,7 +34,7 @@ public class Synapse {
     public void adjustWeight()
     {
         this.weight+=weightAdjustment;
-        //weightAdjustment=0.0;
+        weightAdjustment=0.0;
     }
 
     public Double getWeightAdjustment() {

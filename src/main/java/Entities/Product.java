@@ -197,8 +197,9 @@ public class Product {
 
     public void calculateProductTermVecs()
     {
-        logger.info("calculating term vectors for product with id: "+getAd_id());
         titleTermVec= new TermVector(title);
+//        System.out.println(title);
+//        System.out.println(titleTermVec.getTermFreq().toString());
         attributeTermVec= new TermVector(attributes);
         descriptionTermVec= new TermVector(description);
         StringBuilder wholeString= new StringBuilder(title);
@@ -211,9 +212,9 @@ public class Product {
 
     public void calculateFeatures(String query)
     {
-        logger.info("finding features for query \""+ query+"\" and product with id: "+getAd_id());
         TermVector queryTermVec= new TermVector(query);
         calculateProductTermVecs();
+        features=new Features();
         calculateTitleFeatures(queryTermVec);
         calculateAttributeFeatures(queryTermVec);
         calculateDescriptionFeatures(queryTermVec);

@@ -17,11 +17,11 @@ public class SampleTester
     public static void main(String args[])
     {
 
-        ArrayList<RankList> trainSamples= DataReader.readSamples("MQ2007/Fold1/train.txt");
+        ArrayList<RankList> trainSamples= DataReader.readSamples("MQ2008/Fold1/train.txt");
         System.out.println("read "+trainSamples.size()+" queries from training data");
-        ArrayList<RankList> validationSamples= DataReader.readSamples("MQ2007/Fold1/vali.txt");
+        ArrayList<RankList> validationSamples= DataReader.readSamples("MQ2008/Fold1/vali.txt");
         System.out.println("read "+validationSamples.size()+" queries from validation data");
-        ArrayList<RankList> testSamples= DataReader.readSamples("MQ2007/Fold1/test.txt");
+        ArrayList<RankList> testSamples= DataReader.readSamples("MQ2008/Fold1/test.txt");
         System.out.println("read "+testSamples.size()+" queries from test data");
 
         ArrayList<RankList> trainTest= new ArrayList<RankList>();
@@ -29,8 +29,8 @@ public class SampleTester
         trainTest.add(trainSamples.get(3));
         trainTest.add(trainSamples.get(5));
 
-        RankNet rankNet= new RankNet(trainSamples,validationSamples,trainSamples.get(0).listFeatures.get(0).size(),1);
-        rankNet.setMrrScorer(new NDCGScorer());
+        RankNet rankNet= new RankNet(trainSamples,validationSamples,testSamples,trainSamples.get(0).listFeatures.get(0).size(),1);
+        rankNet.setScorer(new NDCGScorer());
         rankNet.initialize();
         rankNet.train();
 //        NDCGScorer ndcgScorer= new NDCGScorer();

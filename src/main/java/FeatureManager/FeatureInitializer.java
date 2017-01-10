@@ -14,12 +14,13 @@ import Entities.RankList;
 public class FeatureInitializer {
 
     public static int featuresToUse[];
-    public static int featureCount=26;
+    public static int featureCount=25;
 
     public FeatureInitializer() {
         String features=ApplicationProperties.getProperty("FEATURES_TO_USE");
         List<String> featureIds= new ArrayList<String>();
-        if(features!=null&&features!="")featureIds= Arrays.asList(features.split("~"));
+        features =features.replaceAll("\\s","");
+        if(features!=null&&features!=""&&features.matches(".*[0-9].*"))featureIds= Arrays.asList(features.split("~"));
         if(featureIds.size()>0)
         {
             int i=0;
@@ -38,18 +39,37 @@ public class FeatureInitializer {
     {
         double norm[]= new double[featuresToUse.length];
         Arrays.fill(norm,0.0);
+        double count[]= new double[featuresToUse.length];
+        Arrays.fill(count,0.0);
         for(List<Double> prodFeature: features)
         {
+
            for(int i=0;i<featuresToUse.length;i++){
+               if(prodFeature.get(i).compareTo(0.0d)!=0)count[i]++;
               norm[i]+= prodFeature.get(i);
            }
         }
+
+//        for(int i=0;i<featuresToUse.length;i++)
+//        {
+//            if (count[i]!=0d)
+//            norm[i]=norm[i]*features.size()/count[i];
+//        }
         for(List<Double> prodFeature: features)
         {
             for(int i=0;i<featuresToUse.length;i++)
             {
                 Double val=prodFeature.get(i);
-                prodFeature.set(i,val/norm[i]);
+//                if (count[i]==0d)
+//                {
+//                    prodFeature.set(i,0.0d);
+//                }
+//                else
+                if(norm[i]!=0d)
+                {
+//                    if(val.compareTo(0.0d)==0)prodFeature.set(i,norm[i]/features.size());
+                    prodFeature.set(i,val/norm[i]);
+                }
             }
         }
     }
