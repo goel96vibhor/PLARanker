@@ -58,7 +58,7 @@ public class DatabaseManager {
     public static ResultSetConnectionPair getPageViews() {
         try {
             Database database = getStatsDb();
-            PreparedStatement preparedStatement = database.getPreparedStatement("select * from compare_online_stats_final(nolock)");
+            PreparedStatement preparedStatement = database.getPreparedStatement("select * from ebay_learning_stats(nolock)");
             return new ResultSetConnectionPair(preparedStatement.executeQuery(), database);
         } catch (Exception ex) {
             ex.printStackTrace();

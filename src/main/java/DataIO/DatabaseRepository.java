@@ -44,7 +44,7 @@ public class DatabaseRepository {
         }
     }
 
-    public static void parseProductJson(HashMap<Long, String> productJsonMap) {
+    private static void parseProductJson(HashMap<Long, String> productJsonMap) {
         productDetails = new HashMap<>();
         for(Long adId : productJsonMap.keySet()) {
             Product product = new Product();
@@ -88,9 +88,9 @@ public class DatabaseRepository {
                 product.setCategoryId(resultSet.getInt("category_id"));
                 product.setPublisherUrl(resultSet.getString("publisher_url"));
                 product.setNetBid(resultSet.getDouble("net_bid"));
-                product.setViewId(resultSet.getString("rtb_test_data"));
+                product.setViewId(resultSet.getString("view_id"));
                 product.setNetTotalRevenue(resultSet.getDouble("net_total_revenue"));
-                product.setClicked(resultSet.getInt("click_status"));
+                product.setNetTotalRevenue(resultSet.getInt("click_status_present"));
                 products.add(product);
             }
         } catch (SQLException e) {
@@ -117,17 +117,11 @@ public class DatabaseRepository {
             if(!productDetails.containsKey(product.getAd_id()))
                 continue;
             fillProductDetails(product);
+            if(product.getPublisherUrl().contains("contextual.media.net"))
+                continue;
             if (!pageViewMap.containsKey(product.getViewId()))
-            {
-                logger.info("adding view with viewid: "+product.getViewId()+" to viewMap.");
-                View view=new View(product.getViewId(),new ArrayList<Product>(),product.getPublisherUrl());
-                if(view.getQuery()!=null){
-                    pageViewMap.put(product.getViewId(),  view);
-                    pageViewMap.get(product.getViewId()).getAds().add(product);
-
-                }
-            }
-            else pageViewMap.get(product.getViewId()).getAds().add(product);
+                pageViewMap.put(product.getViewId(), new View(product.getViewId(), new ArrayList<>(), product.getPublisherUrl()));
+            pageViewMap.get(product.getViewId()).getAds().add(product);
         }
         return new ArrayList<>(pageViewMap.values());
     }
@@ -147,6 +141,4 @@ public class DatabaseRepository {
         }
         return pageViews;
     }
-
-
 }

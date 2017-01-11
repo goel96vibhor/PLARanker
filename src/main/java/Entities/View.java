@@ -1,5 +1,7 @@
 package Entities;
 
+import Utils.URLDetailFetcher;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -19,13 +21,19 @@ public class View {
     public View(String viewId, List<Product> ads, String publisherUrl) {
         this.viewId = viewId;
         this.ads = ads;
-        try {
-            if (publisherUrl!=null)
-                this.publisherUrl = URLDecoder.decode(publisherUrl.replaceAll("%(?![0-9a-fA-F]{2})", "%25"), "UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            // Can be safely ignored because UTF-8 is always supported
-        }
+        this.publisherUrl = publisherUrl;
+//        try {
+//            if (publisherUrl!=null)
+//                this.publisherUrl = URLDecoder.decode(publisherUrl.replaceAll("%(?![0-9a-fA-F]{2})", "%25"), "UTF-8");
+//        } catch (UnsupportedEncodingException ex) {
+//            // Can be safely ignored because UTF-8 is always supported
+//        }
         if (this.publisherUrl!=null)query=parseQuery(this.publisherUrl);
+        this.urlBean = URLDetailFetcher.getURLBean(publisherUrl);
+    }
+
+    public URLBean getUrlBean() {
+        return urlBean;
     }
 
     public String getQuery() {
