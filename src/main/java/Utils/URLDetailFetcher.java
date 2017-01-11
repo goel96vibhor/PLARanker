@@ -6,6 +6,8 @@ import org.json.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+
 import ProductPreprocess.WordRetrieval;
 
 /**
@@ -17,6 +19,12 @@ public class URLDetailFetcher
     private final static int CURL_CONNECT_TIMEOUT_MS = 2000;
     private final static  int CURL_READ_TIMEOUT_MS = 2000;
     private final static String xtractorApiUrl="http://xtractor.reports.mn/api?a=unique&url=";
+    private static HashMap<String, URLBean> urlBeanHashMap= new HashMap<String,URLBean>();
+
+    public HashMap<String, URLBean> getUrlBeanHashMap() {
+        return urlBeanHashMap;
+    }
+
     public static String getUrlExtractedJson(String publisherUrl)
     {
         publisherUrl = cleanSourceUrl(xtractorApiUrl+publisherUrl) ;
@@ -159,12 +167,14 @@ public class URLDetailFetcher
 
     public static URLBean getURLBean(String publisherUrl)
     {
+        if(urlBeanHashMap.containsKey(publisherUrl))return urlBeanHashMap.get(publisherUrl);
         URLBean urlBean= new URLBean();
         String jsonOutput= getUrlExtractedJson(publisherUrl);
         JSONObject urlJSON = new JSONObject(jsonOutput);
         urlBean.setTitle(getTitlefromJson(urlJSON));
         urlBean.setHeading(getHeadingsfromJson(urlJSON));
         urlBean.setContent(getContentfromJson(urlJSON));
+        urlBeanHashMap.put(publisherUrl,urlBean);
         return urlBean;
     }
 

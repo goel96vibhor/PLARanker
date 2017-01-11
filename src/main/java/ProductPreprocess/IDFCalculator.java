@@ -12,6 +12,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import Entities.Product;
+import Entities.View;
 import Utils.ApplicationProperties;
 import org.apache.log4j.Logger;
 
@@ -199,6 +200,11 @@ public class IDFCalculator implements Externalizable{
         avgAttributeLength=in.readDouble();
         avgDescriptionLength=in.readDouble();
         avgwholeDocLength=in.readDouble();
+    }
+
+    public void updateIDFforView(View view)
+    {
+
     }
 
 }

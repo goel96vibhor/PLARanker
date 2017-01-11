@@ -14,6 +14,7 @@ public class View {
     private String query=null;
     private String viewId;
     private List<Product> ads;
+    private URLBean urlBean;
 
     public View(String viewId, List<Product> ads, String publisherUrl) {
         this.viewId = viewId;
