@@ -83,8 +83,8 @@ public class DatabaseRepository {
         try {
             while(resultSet.next()) {
                 Product product = new Product();
-                product.setAd_id(resultSet.getLong("article_id"));
-                product.setAdPosition(resultSet.getInt("article_position"));
+                product.setAd_id(resultSet.getLong("ad_id"));
+                product.setAdPosition(resultSet.getInt("ad_position"));
                 product.setCategoryId(resultSet.getInt("category_id"));
                 product.setPublisherUrl(resultSet.getString("publisher_url"));
                 product.setNetBid(resultSet.getDouble("net_bid"));

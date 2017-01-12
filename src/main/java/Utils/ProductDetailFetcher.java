@@ -124,10 +124,10 @@ public class ProductDetailFetcher {
     }
 
     private static ResultSetConnectionPair getProductIds() {
-        Database database = DatabaseManager.getAdMaster();
+        Database database = DatabaseManager.getStatsDb();
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = database.getPreparedStatement("select * from compare_online_stats_final_1(nolock)");
+            preparedStatement = database.getPreparedStatement("select * from ebay_learning_stats(nolock)");
             return new ResultSetConnectionPair(preparedStatement.executeQuery(), database);
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,9 +162,9 @@ public class ProductDetailFetcher {
         ResultSet resultSet = resultSetConnectionPair.getResultSet();
         try {
             while (resultSet.next()) {
-                adIds.add(resultSet.getLong("article_id"));
+                adIds.add(resultSet.getLong("ad_id"));
             }
-            System.out.println(adIds.size());
+            System.out.println("Ad Ids in Stats DB : " + adIds.size());
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
@@ -178,18 +178,19 @@ public class ProductDetailFetcher {
         List<Long> adIds = getAdIds();
 
         List<String> esIndices = new ArrayList<String>();
-        esIndices.add("items_ecn_20161125034002");
-        esIndices.add("items_ecn_20161128121001");
-        esIndices.add("items_ecn_20161123110323");
-        esIndices.add("items_ecn_20161127095002");
-        esIndices.add("items_ecn_20161124035001");
+        esIndices.add("items_ecn_20170111034001");
+        esIndices.add("items_ecn_20170110033002");
+        esIndices.add("items_ecn_20170109033002");
+        esIndices.add("items_ecn_20170108034001");
+//        esIndices.add("items_ecn_20161127095002");
+//        esIndices.add("items_ecn_20161124035001");
 
         List<Long> idsFound = new ArrayList<Long>();
         HashMap<Long, String> productMap = new HashMap<>();
         int total = 0;
         int scrollSize = 100;
         for(String index : esIndices) {
-            String esApi = "http://172.19.59.5:9877/" + index + "/_search";
+            String esApi = "http://pla-es.srv.media.net:9877/" + index + "/_search";
             for (int i = 0; i < adIds.size(); i += scrollSize) {
                 String esQuery = getQuery(adIds.subList(i, Math.min(i + scrollSize, adIds.size())));
                 String result = postHttpUrlContent(esApi, esQuery);
