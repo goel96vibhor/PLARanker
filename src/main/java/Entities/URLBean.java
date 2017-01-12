@@ -10,6 +10,8 @@ public class URLBean
     private String title;
     private String heading;
     private String content;
+    private TermVector titleTermVec;
+    private TermVector contenTermVec;
 
     public String getUrl() {
         return url;
@@ -42,4 +44,21 @@ public class URLBean
     public void setContent(String content) {
         this.content = content;
     }
+
+    public TermVector getTitleTermVec() {
+        return titleTermVec;
+    }
+
+    public TermVector getContenTermVec() {
+        return contenTermVec;
+    }
+
+    public void calculateTermVecs()
+    {
+        titleTermVec= new TermVector(title);
+        contenTermVec= new TermVector(content);
+    }
+
+
+
 }

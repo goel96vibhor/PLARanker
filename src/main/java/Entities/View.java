@@ -13,7 +13,6 @@ import java.util.List;
  */
 public class View {
     private String publisherUrl=null;
-    private String query=null;
     private String viewId;
     private List<Product> ads;
     private URLBean urlBean;
@@ -28,16 +27,11 @@ public class View {
 //        } catch (UnsupportedEncodingException ex) {
 //            // Can be safely ignored because UTF-8 is always supported
 //        }
-        if (this.publisherUrl!=null)query=parseQuery(this.publisherUrl);
         this.urlBean = URLDetailFetcher.getURLBean(publisherUrl);
     }
 
     public URLBean getUrlBean() {
         return urlBean;
-    }
-
-    public String getQuery() {
-        return query;
     }
 
     public String getViewId() {
@@ -58,10 +52,11 @@ public class View {
 
     public void calculateFeaturesforView()
     {
+        urlBean.calculateTermVecs();
         for(Product product:ads)
         {
             //System.out.println(query);
-            product.calculateFeatures(query);
+            product.calculateFeatures(urlBean);
         }
     }
 
@@ -70,42 +65,6 @@ public class View {
         return new RankList(ads,viewId);
     }
 
-    public String parseQuery(String publisherUrl)
-    {
-        String result=null;
-        int startIndex,endIndex;
-        if(publisherUrl.contains("search/"))
-        {
-            startIndex=publisherUrl.indexOf("search/")+7;
-            endIndex=publisherUrl.indexOf('?',startIndex);
-            if(endIndex!=-1)result=publisherUrl.substring(startIndex,endIndex);
-            else result=publisherUrl.substring(startIndex);
-        }
-        else if (publisherUrl.contains("index/"))
-        {
-            startIndex=publisherUrl.indexOf("index/")+6;
-            endIndex=publisherUrl.indexOf('?',startIndex);
-            if(endIndex!=-1)result=publisherUrl.substring(startIndex,endIndex);
-            else result=publisherUrl.substring(startIndex);
-        }
-        else if(publisherUrl.contains("topic/20/"))
-        {
-            startIndex=publisherUrl.indexOf("topic/20/")+9;
-            endIndex=publisherUrl.indexOf('?',startIndex);
-            if(endIndex!=-1)result=publisherUrl.substring(startIndex,endIndex);
-            else result=publisherUrl.substring(startIndex);
-        }
-        else if(publisherUrl.contains("cat/20/"))
-        {
-            startIndex=publisherUrl.indexOf("cat/20/")+7;
-            endIndex=publisherUrl.indexOf('?',startIndex);
-            if(endIndex!=-1)result=publisherUrl.substring(startIndex,endIndex);
-            else result=publisherUrl.substring(startIndex);
-        }
-        if (result!=null && result.matches(".*[a-z].*")){
-            return result;
-        }
-        return null;
-    }
+
 
 }

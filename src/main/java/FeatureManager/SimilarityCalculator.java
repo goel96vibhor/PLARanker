@@ -36,10 +36,10 @@ public class SimilarityCalculator {
                 if(docTypeIdfs.containsKey(term))
                 {
                     //if(docType==3)System.out.print(term);
-                    termDocTypeCount=IDFCalculator.productCount/docTypeIdfs.get(term);
+                    termDocTypeCount=IDFCalculator.getDocumentCount()/docTypeIdfs.get(term);
                     //if (docTypeIdfs.get(term)==0)System.out.print("yes");
                     //if(docType==3)System.out.print(docTypeIdfs.get(term));
-                    termIdf=(IDFCalculator.productCount)/(termDocTypeCount);
+                    termIdf=(IDFCalculator.getDocumentCount())/(termDocTypeCount);
                     //if(docType==3)System.out.println(" "+termIdf);
                     termIdf=Math.log10(termIdf);
                 }
@@ -70,8 +70,8 @@ public class SimilarityCalculator {
             if(documentTermVec.getTermFreq().containsKey(term)){
                 if(docTypeIdfs.containsKey(term))
                 {
-                    termDocTypeCount=IDFCalculator.productCount/docTypeIdfs.get(term);
-                    termIdf=(IDFCalculator.productCount)/(termDocTypeCount);
+                    termDocTypeCount=IDFCalculator.getDocumentCount()/docTypeIdfs.get(term);
+                    termIdf=(IDFCalculator.getDocumentCount())/(termDocTypeCount);
                     termIdf=Math.log10(termIdf);
                 }
                 else termIdf=0.0;

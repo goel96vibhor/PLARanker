@@ -28,8 +28,6 @@ public class Product {
     private Double expectedRPM;
     private Features features;
     private TermVector titleTermVec;
-    private TermVector attributeTermVec;
-    private TermVector descriptionTermVec;
     private TermVector wholeDocTermVec;
     private static Logger logger = Logger.getLogger(Product.class.getName());
 
@@ -37,14 +35,6 @@ public class Product {
 
     public TermVector getTitleTermVec() {
         return titleTermVec;
-    }
-
-    public TermVector getAttributeTermVec() {
-        return attributeTermVec;
-    }
-
-    public TermVector getDescriptionTermVec() {
-        return descriptionTermVec;
     }
 
     public TermVector getWholeDocTermVec() {
@@ -200,8 +190,6 @@ public class Product {
         titleTermVec= new TermVector(title);
 //        System.out.println(title);
 //        System.out.println(titleTermVec.getTermFreq().toString());
-        attributeTermVec= new TermVector(attributes);
-        descriptionTermVec= new TermVector(description);
         StringBuilder wholeString= new StringBuilder(title);
         wholeString.append(" ");
         wholeString.append(attributes);
@@ -210,15 +198,14 @@ public class Product {
         wholeDocTermVec= new TermVector(wholeString.toString());
     }
 
-    public void calculateFeatures(String query)
+    public void calculateFeatures(URLBean urlBean)
     {
-        TermVector queryTermVec= new TermVector(query);
         calculateProductTermVecs();
         features=new Features();
-        calculateTitleFeatures(queryTermVec);
-        calculateAttributeFeatures(queryTermVec);
-        calculateDescriptionFeatures(queryTermVec);
-        calculateWholeDocFeatures(queryTermVec);
+        calculateTitle_titleFeatures(urlBean.getTitleTermVec());
+        calculateTitle_contentFeatures(urlBean.getContenTermVec());
+        calculateContent_titleFeatures(urlBean.getTitleTermVec());
+        calculateContent_contentFeatures(urlBean.getContenTermVec());
         features.setNetBid(netBid);
         features.setPrice(price);
         features.setDiscount((originalPrice-price)/price);
@@ -229,40 +216,40 @@ public class Product {
 
     }
 
-    public void calculateTitleFeatures(TermVector queryTermVec)
+    public void calculateTitle_titleFeatures(TermVector urlTitleTermVec)
     {
-        features.setTitleTFIDF(SimilarityCalculator.calculateDocumentTFIDF(titleTermVec, queryTermVec, 0));
-        features.setTitleBM25(SimilarityCalculator.calculateDocumentBM25(titleTermVec,queryTermVec,0));
-        features.setTitleLMIR_JM(LMIRCalculator.calculateLMIR_JM(titleTermVec,queryTermVec,0));
-        features.setTitleLMIR_DIR(LMIRCalculator.calculateLMIR_DIR(titleTermVec,queryTermVec,0));
-        features.setTitleLMIR_ABS(LMIRCalculator.calculateLMIR_ABS(titleTermVec,queryTermVec,0));
+        features.setTitle_titleTFIDF(SimilarityCalculator.calculateDocumentTFIDF(titleTermVec, urlTitleTermVec, 0));
+        features.setTitle_titleBM25(SimilarityCalculator.calculateDocumentBM25(titleTermVec,urlTitleTermVec,0));
+        features.setTitle_titleLMIR_JM(LMIRCalculator.calculateLMIR_JM(titleTermVec,urlTitleTermVec,0));
+        features.setTitle_titleLMIR_DIR(LMIRCalculator.calculateLMIR_DIR(titleTermVec,urlTitleTermVec,0));
+        features.setTitle_titleLMIR_ABS(LMIRCalculator.calculateLMIR_ABS(titleTermVec,urlTitleTermVec,0));
     }
 
-    public void calculateAttributeFeatures(TermVector queryTermVec)
+    public void calculateTitle_contentFeatures(TermVector urlContentTermVec)
     {
-        features.setAttributeTFIDF(SimilarityCalculator.calculateDocumentTFIDF(attributeTermVec, queryTermVec, 1));
-        features.setAttributeBM25(SimilarityCalculator.calculateDocumentBM25(attributeTermVec,queryTermVec,1));
-        features.setAttributeLMIR_JM(LMIRCalculator.calculateLMIR_JM(attributeTermVec,queryTermVec,1));
-        features.setAttributeLMIR_DIR(LMIRCalculator.calculateLMIR_DIR(attributeTermVec,queryTermVec,1));
-        features.setAttributeLMIR_ABS(LMIRCalculator.calculateLMIR_ABS(attributeTermVec,queryTermVec,1));
+        features.setTitle_contentTFIDF(SimilarityCalculator.calculateDocumentTFIDF(titleTermVec, urlContentTermVec, 1));
+        features.setTitle_contentBM25(SimilarityCalculator.calculateDocumentBM25(titleTermVec,urlContentTermVec,1));
+        features.setTitle_contentLMIR_JM(LMIRCalculator.calculateLMIR_JM(titleTermVec,urlContentTermVec,1));
+        features.setTitle_contentLMIR_DIR(LMIRCalculator.calculateLMIR_DIR(titleTermVec,urlContentTermVec,1));
+        features.setTitle_contentLMIR_ABS(LMIRCalculator.calculateLMIR_ABS(titleTermVec,urlContentTermVec,1));
     }
 
-    public void calculateDescriptionFeatures(TermVector queryTermVec)
+    public void calculateContent_titleFeatures(TermVector urlTitleTermVe)
     {
-        features.setDescriptionTFIDF(SimilarityCalculator.calculateDocumentTFIDF(descriptionTermVec, queryTermVec, 2));
-        features.setDescriptionBM25(SimilarityCalculator.calculateDocumentBM25(descriptionTermVec,queryTermVec,2));
-        features.setDescriptionLMIR_JM(LMIRCalculator.calculateLMIR_JM(descriptionTermVec,queryTermVec,2));
-        features.setDescriptionLMIR_DIR(LMIRCalculator.calculateLMIR_DIR(descriptionTermVec,queryTermVec,2));
-        features.setDescriptionLMIR_ABS(LMIRCalculator.calculateLMIR_ABS(descriptionTermVec,queryTermVec,2));
+        features.setContent_titleTFIDF(SimilarityCalculator.calculateDocumentTFIDF(wholeDocTermVec, urlTitleTermVe, 1));
+        features.setContent_titleBM25(SimilarityCalculator.calculateDocumentBM25(wholeDocTermVec,urlTitleTermVe,1));
+        features.setContent_titleLMIR_JM(LMIRCalculator.calculateLMIR_JM(wholeDocTermVec,urlTitleTermVe,1));
+        features.setContent_titleLMIR_DIR(LMIRCalculator.calculateLMIR_DIR(wholeDocTermVec,urlTitleTermVe,1));
+        features.setContent_titleLMIR_ABS(LMIRCalculator.calculateLMIR_ABS(wholeDocTermVec,urlTitleTermVe,1));
     }
 
-    public void calculateWholeDocFeatures(TermVector queryTermVec)
+    public void calculateContent_contentFeatures(TermVector urlContentTermVec)
     {
-        features.setWholeDocTFIDF(SimilarityCalculator.calculateDocumentTFIDF(wholeDocTermVec, queryTermVec, 3));
-        features.setWholeDocBM25(SimilarityCalculator.calculateDocumentBM25(wholeDocTermVec,queryTermVec,3));
-        features.setWholeDocLMIR_JM(LMIRCalculator.calculateLMIR_JM(wholeDocTermVec,queryTermVec,3));
-        features.setWholeDocLMIR_DIR(LMIRCalculator.calculateLMIR_DIR(wholeDocTermVec,queryTermVec,3));
-        features.setWholeDocLMIR_ABS(LMIRCalculator.calculateLMIR_ABS(wholeDocTermVec,queryTermVec,3));
+        features.setContent_contentTFIDF(SimilarityCalculator.calculateDocumentTFIDF(wholeDocTermVec, urlContentTermVec, 1));
+        features.setContent_contentBM25(SimilarityCalculator.calculateDocumentBM25(wholeDocTermVec,urlContentTermVec,1));
+        features.setContent_contentLMIR_JM(LMIRCalculator.calculateLMIR_JM(wholeDocTermVec,urlContentTermVec,1));
+        features.setContent_contentLMIR_DIR(LMIRCalculator.calculateLMIR_DIR(wholeDocTermVec,urlContentTermVec,1));
+        features.setContent_contentLMIR_ABS(LMIRCalculator.calculateLMIR_ABS(wholeDocTermVec,urlContentTermVec,1));
     }
 
 }

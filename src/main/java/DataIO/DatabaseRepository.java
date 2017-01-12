@@ -120,7 +120,7 @@ public class DatabaseRepository {
             if(product.getPublisherUrl().contains("contextual.media.net"))
                 continue;
             if (!pageViewMap.containsKey(product.getViewId()))
-                pageViewMap.put(product.getViewId(), new View(product.getViewId(), new ArrayList<>(), product.getPublisherUrl()));
+                pageViewMap.put(product.getViewId(), new View(product.getViewId(), new ArrayList<Product>(), product.getPublisherUrl()));
             pageViewMap.get(product.getViewId()).getAds().add(product);
         }
         return new ArrayList<>(pageViewMap.values());

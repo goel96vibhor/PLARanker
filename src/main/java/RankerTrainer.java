@@ -27,40 +27,41 @@ public class RankerTrainer
     private static Logger logger = Logger.getLogger(RankerTrainer.class.getName());
     public void prepareData()
     {
-        DatabaseRepository databaseRepository= new DatabaseRepository();
-        System.out.println(DatabaseRepository.getProductDetails().size());
+//        DatabaseRepository databaseRepository= new DatabaseRepository();
+//        System.out.println(DatabaseRepository.getProductDetails().size());
 //        for(Product product:DatabaseRepository.getProductDetails().values())
 //        {
 //            IDFCalculator.updateIdf(product);
 //        }
 //        IDFCalculator.updateAll();
 //        deserializeIDF();
-//        IDFCalculator.calculateIdfs();
-        deserializeIDF();
+        IDFCalculator.calculateIdfs();
+        serializeIdf();
+//        deserializeIDF();
         System.out.println("Completed calculation of idfs");
-        List<View> verticalViews= DatabaseRepository.getPageViews();
-        System.out.println("Completed addition of views to map");
-        trainSamples= new ArrayList<RankList>();
-        validationSamples=new ArrayList<RankList>();
-        testSamples= new ArrayList<RankList>();
-        for(View view:verticalViews)
-        {
-            //if(!view.getViewId().equalsIgnoreCase("B28EE0B31C03D224A3ECE63F1BEBC096"))continue;
-            view.calculateFeaturesforView();
-            logger.info("calculated features for view: "+view.getViewId());
-            RankList viewRankList= view.getRankListforView();
-            int count=0;
-            for(int targetValue:viewRankList.targetValues)count+=targetValue;
-            if(count==0)continue;;
-            if(random.nextDouble()<0.5)trainSamples.add(viewRankList);
-            else if(random.nextDouble()<0.4)validationSamples.add(viewRankList);
-            else testSamples.add(viewRankList);
-            logger.info(viewRankList.targetValues);
-            for(int i=0;i<viewRankList.listFeatures.size();i++)
-            logger.info(viewRankList.listFeatures.get(i));
-        }
-        System.out.println("completed calculating features");
-        System.out.println("trainsamples: "+trainSamples.size()+" validationSamples: "+validationSamples.size()+" testsamples: "+testSamples.size());
+//        List<View> verticalViews= DatabaseRepository.getPageViews();
+//        System.out.println("Completed addition of views to map");
+//        trainSamples= new ArrayList<RankList>();
+//        validationSamples=new ArrayList<RankList>();
+//        testSamples= new ArrayList<RankList>();
+//        for(View view:verticalViews)
+//        {
+//            //if(!view.getViewId().equalsIgnoreCase("B28EE0B31C03D224A3ECE63F1BEBC096"))continue;
+//            view.calculateFeaturesforView();
+//            logger.info("calculated features for view: "+view.getViewId());
+//            RankList viewRankList= view.getRankListforView();
+//            int count=0;
+//            for(int targetValue:viewRankList.targetValues)count+=targetValue;
+//            if(count==0)continue;;
+//            if(random.nextDouble()<0.5)trainSamples.add(viewRankList);
+//            else if(random.nextDouble()<0.4)validationSamples.add(viewRankList);
+//            else testSamples.add(viewRankList);
+//            logger.info(viewRankList.targetValues);
+//            for(int i=0;i<viewRankList.listFeatures.size();i++)
+//            logger.info(viewRankList.listFeatures.get(i));
+//        }
+//        System.out.println("completed calculating features");
+//        System.out.println("trainsamples: "+trainSamples.size()+" validationSamples: "+validationSamples.size()+" testsamples: "+testSamples.size());
     }
 
     public void trainModel()
@@ -73,16 +74,13 @@ public class RankerTrainer
 
     public void serializeIdf()
     {
-        System.out.println(IDFCalculator.productCount);
-        System.out.println(IDFCalculator.titleIDFs.size());
-        System.out.println(IDFCalculator.attributeIDFs.size());
-        System.out.println(IDFCalculator.descriptionIDFs.size());
-        System.out.println(IDFCalculator.wholeDocIDFs.size());
-        System.out.println(IDFCalculator.productSet.size());
-        System.out.println(IDFCalculator.avgTitleLength);
-        System.out.println(IDFCalculator.avgAttributeLength);
-        System.out.println(IDFCalculator.avgDescriptionLength);
-        System.out.println(IDFCalculator.avgwholeDocLength);
+        System.out.println(IDFCalculator.getDocumentCount());
+        System.out.println(IDFCalculator.getTitleIDFs().size());
+        System.out.println(IDFCalculator.getWholeDocIDFs().size());
+        System.out.println(IDFCalculator.getProductSet().size());
+        System.out.println(IDFCalculator.getUrlSet().size());
+        System.out.println(IDFCalculator.getAvgTitleLength());
+        System.out.println(IDFCalculator.getAvgwholeDocLength());
 
         try{
         FileOutputStream fos = new FileOutputStream("idf.map");
@@ -110,15 +108,12 @@ public class RankerTrainer
         {
             ex.printStackTrace();
         }
-        System.out.println(IDFCalculator.productCount);
-        System.out.println(IDFCalculator.titleIDFs.size());
-        System.out.println(IDFCalculator.attributeIDFs.size());
-        System.out.println(IDFCalculator.descriptionIDFs.size());
-        System.out.println(IDFCalculator.wholeDocIDFs.size());
-        System.out.println(IDFCalculator.productSet.size());
-        System.out.println(IDFCalculator.avgTitleLength);
-        System.out.println(IDFCalculator.avgAttributeLength);
-        System.out.println(IDFCalculator.avgDescriptionLength);
-        System.out.println(IDFCalculator.avgwholeDocLength);
+        System.out.println(IDFCalculator.getDocumentCount());
+        System.out.println(IDFCalculator.getTitleIDFs().size());
+        System.out.println(IDFCalculator.getWholeDocIDFs().size());
+        System.out.println(IDFCalculator.getProductSet().size());
+        System.out.println(IDFCalculator.getUrlSet().size());
+        System.out.println(IDFCalculator.getAvgTitleLength());
+        System.out.println(IDFCalculator.getAvgwholeDocLength());
     }
 }

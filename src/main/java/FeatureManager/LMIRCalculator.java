@@ -30,15 +30,15 @@ public class LMIRCalculator
         for(String term:queryTermVec.getTermFreq().keySet())
         {
             if(docTypeIdfs.containsKey(term)&&docTypeIdfs.get(term)>0.00001)
-                collTermCount=IDFCalculator.productCount/docTypeIdfs.get(term);
+                collTermCount=IDFCalculator.getDocumentCount()/docTypeIdfs.get(term);
             else
-                collTermCount=IDFCalculator.productCount*avgDocTypelength/docTypeIdfs.size();
+                collTermCount=IDFCalculator.getDocumentCount()*avgDocTypelength/docTypeIdfs.size();
             if(documentTermVec.getTermFreq().containsKey(term))
             {
                 pTermDoc= documentTermVec.getTermFreq().get(term)/documentTermVec.getLength();
             }
             else pTermDoc=0.0;
-            pTermCollec=collTermCount/(IDFCalculator.productCount*avgDocTypelength);
+            pTermCollec=collTermCount/(IDFCalculator.getDocumentCount()*avgDocTypelength);
             score*=Math.pow((1-lambda)*(pTermDoc)+(lambda)*pTermCollec,queryTermVec.getTermFreq().get(term));
 
         }

@@ -13,26 +13,26 @@ import java.util.List;
  */
 public class Features{
 
-    private Double titleTFIDF;
-    private Double attributeTFIDF;
-    private Double descriptionTFIDF;
-    private Double wholeDocTFIDF;
-    private Double titleBM25;
-    private Double attributeBM25;
-    private Double descriptionBM25;
-    private Double wholeDocBM25;
-    private Double titleLMIR_JM;
-    private Double attributeLMIR_JM;
-    private Double descriptionLMIR_JM;
-    private Double wholeDocLMIR_JM;
-    private Double titleLMIR_DIR;
-    private Double attributeLMIR_DIR;
-    private Double descriptionLMIR_DIR;
-    private Double wholeDocLMIR_DIR;
-    private Double titleLMIR_ABS;
-    private Double attributeLMIR_ABS;
-    private Double descriptionLMIR_ABS;
-    private Double wholeDocLMIR_ABS;
+    private Double title_titleTFIDF;
+    private Double title_contentTFIDF;
+    private Double content_titleTFIDF;
+    private Double content_contentTFIDF;
+    private Double title_titleBM25;
+    private Double title_contentBM25;
+    private Double content_titleBM25;
+    private Double content_contentBM25;
+    private Double title_titleLMIR_JM;
+    private Double title_contentLMIR_JM;
+    private Double content_titleLMIR_JM;
+    private Double content_contentLMIR_JM;
+    private Double title_titleLMIR_DIR;
+    private Double title_contentLMIR_DIR;
+    private Double content_titleLMIR_DIR;
+    private Double content_contentLMIR_DIR;
+    private Double title_titleLMIR_ABS;
+    private Double title_contentLMIR_ABS;
+    private Double content_titleLMIR_ABS;
+    private Double content_contentLMIR_ABS;
     private Double netBid;
     private Double price;
     private Double discount;
@@ -41,84 +41,84 @@ public class Features{
     private Double expectedRPM;
     private List<Double> featureList;
 
-    public void setTitleTFIDF(Double titleTFIDF) {
-        this.titleTFIDF = titleTFIDF;
+    public void setTitle_titleTFIDF(Double title_titleTFIDF) {
+        this.title_titleTFIDF = title_titleTFIDF;
     }
 
-    public void setAttributeTFIDF(Double attributeTFIDF) {
-        this.attributeTFIDF = attributeTFIDF;
+    public void setTitle_contentTFIDF(Double title_contentTFIDF) {
+        this.title_contentTFIDF = title_contentTFIDF;
     }
 
-    public void setDescriptionTFIDF(Double descriptionTFIDF) {
-        this.descriptionTFIDF = descriptionTFIDF;
+    public void setContent_titleTFIDF(Double content_titleTFIDF) {
+        this.content_titleTFIDF = content_titleTFIDF;
     }
 
-    public void setWholeDocTFIDF(Double wholeDocTFIDF) {
-        this.wholeDocTFIDF = wholeDocTFIDF;
+    public void setContent_contentTFIDF(Double content_contentTFIDF) {
+        this.content_contentTFIDF = content_contentTFIDF;
     }
 
-    public void setTitleBM25(Double titleBM25) {
-        this.titleBM25 = titleBM25;
+    public void setTitle_titleBM25(Double title_titleBM25) {
+        this.title_titleBM25 = title_titleBM25;
     }
 
-    public void setAttributeBM25(Double attributeBM25) {
-        this.attributeBM25 = attributeBM25;
+    public void setTitle_contentBM25(Double title_contentBM25) {
+        this.title_contentBM25 = title_contentBM25;
     }
 
-    public void setDescriptionBM25(Double descriptionBM25) {
-        this.descriptionBM25 = descriptionBM25;
+    public void setContent_titleBM25(Double content_titleBM25) {
+        this.content_titleBM25 = content_titleBM25;
     }
 
-    public void setWholeDocBM25(Double wholeDocBM25) {
-        this.wholeDocBM25 = wholeDocBM25;
+    public void setContent_contentBM25(Double content_contentBM25) {
+        this.content_contentBM25 = content_contentBM25;
     }
 
-    public void setTitleLMIR_JM(Double titleLMIR_JM) {
-        this.titleLMIR_JM = titleLMIR_JM;
+    public void setTitle_titleLMIR_JM(Double title_titleLMIR_JM) {
+        this.title_titleLMIR_JM = title_titleLMIR_JM;
     }
 
-    public void setAttributeLMIR_JM(Double attributeLMIR_JM) {
-        this.attributeLMIR_JM = attributeLMIR_JM;
+    public void setTitle_contentLMIR_JM(Double title_contentLMIR_JM) {
+        this.title_contentLMIR_JM = title_contentLMIR_JM;
     }
 
-    public void setDescriptionLMIR_JM(Double descriptionLMIR_JM) {
-        this.descriptionLMIR_JM = descriptionLMIR_JM;
+    public void setContent_titleLMIR_JM(Double content_titleLMIR_JM) {
+        this.content_titleLMIR_JM = content_titleLMIR_JM;
     }
 
-    public void setWholeDocLMIR_JM(Double wholeDocLMIR_JM) {
-        this.wholeDocLMIR_JM = wholeDocLMIR_JM;
+    public void setContent_contentLMIR_JM(Double content_contentLMIR_JM) {
+        this.content_contentLMIR_JM = content_contentLMIR_JM;
     }
 
-    public void setTitleLMIR_DIR(Double titleLMIR_DIR) {
-        this.titleLMIR_DIR = titleLMIR_DIR;
+    public void setTitle_titleLMIR_DIR(Double title_titleLMIR_DIR) {
+        this.title_titleLMIR_DIR = title_titleLMIR_DIR;
     }
 
-    public void setAttributeLMIR_DIR(Double attributeLMIR_DIR) {
-        this.attributeLMIR_DIR = attributeLMIR_DIR;
+    public void setTitle_contentLMIR_DIR(Double title_contentLMIR_DIR) {
+        this.title_contentLMIR_DIR = title_contentLMIR_DIR;
     }
 
-    public void setDescriptionLMIR_DIR(Double descriptionLMIR_DIR) {
-        this.descriptionLMIR_DIR = descriptionLMIR_DIR;
+    public void setContent_titleLMIR_DIR(Double content_titleLMIR_DIR) {
+        this.content_titleLMIR_DIR = content_titleLMIR_DIR;
     }
 
-    public void setWholeDocLMIR_DIR(Double wholeDocLMIR_DIR) {
-        this.wholeDocLMIR_DIR = wholeDocLMIR_DIR;
+    public void setContent_contentLMIR_DIR(Double content_contentLMIR_DIR) {
+        this.content_contentLMIR_DIR = content_contentLMIR_DIR;
     }
 
-    public void setTitleLMIR_ABS(Double titleLMIR_ABS) {
-        this.titleLMIR_ABS = titleLMIR_ABS;
+    public void setTitle_titleLMIR_ABS(Double title_titleLMIR_ABS) {
+        this.title_titleLMIR_ABS = title_titleLMIR_ABS;
     }
 
-    public void setAttributeLMIR_ABS(Double attributeLMIR_ABS) {
-        this.attributeLMIR_ABS = attributeLMIR_ABS;
+    public void setTitle_contentLMIR_ABS(Double title_contentLMIR_ABS) {
+        this.title_contentLMIR_ABS = title_contentLMIR_ABS;
     }
 
-    public void setDescriptionLMIR_ABS(Double descriptionLMIR_ABS) {
-        this.descriptionLMIR_ABS = descriptionLMIR_ABS;
+    public void setContent_titleLMIR_ABS(Double content_titleLMIR_ABS) {
+        this.content_titleLMIR_ABS = content_titleLMIR_ABS;
     }
 
-    public void setWholeDocLMIR_ABS(Double wholeDocLMIR_ABS) {
-        this.wholeDocLMIR_ABS = wholeDocLMIR_ABS;
+    public void setContent_contentLMIR_ABS(Double content_contentLMIR_ABS) {
+        this.content_contentLMIR_ABS = content_contentLMIR_ABS;
     }
 
     public void setNetBid(Double netBid) {
@@ -148,30 +148,30 @@ public class Features{
     public List<Double> getFeatureList()
     {
         featureList= new ArrayList<Double>();
-        featureList.add(titleTFIDF);
-        featureList.add(attributeTFIDF);
-        featureList.add(descriptionTFIDF);
-        featureList.add(wholeDocTFIDF);
+        featureList.add(title_titleTFIDF);
+        featureList.add(title_contentTFIDF);
+        featureList.add(content_titleTFIDF);
+        featureList.add(content_contentTFIDF);
 
-        featureList.add(titleBM25);
-        featureList.add(attributeBM25);
-        featureList.add(descriptionBM25);
-        featureList.add(wholeDocBM25);
+        featureList.add(title_titleBM25);
+        featureList.add(title_contentBM25);
+        featureList.add(content_titleBM25);
+        featureList.add(content_contentBM25);
 
-        featureList.add(titleLMIR_JM);
-        featureList.add(attributeLMIR_JM);
-        featureList.add(descriptionLMIR_JM);
-        featureList.add(wholeDocLMIR_JM);
+        featureList.add(title_titleLMIR_JM);
+        featureList.add(title_contentLMIR_JM);
+        featureList.add(content_titleLMIR_JM);
+        featureList.add(content_contentLMIR_JM);
 
-        featureList.add(titleLMIR_DIR);
-        featureList.add(attributeLMIR_DIR);
-        featureList.add(descriptionLMIR_DIR);
-        featureList.add(wholeDocLMIR_DIR);
+        featureList.add(title_titleLMIR_DIR);
+        featureList.add(title_contentLMIR_DIR);
+        featureList.add(content_titleLMIR_DIR);
+        featureList.add(content_contentLMIR_DIR);
 
-        featureList.add(titleLMIR_ABS);
-        featureList.add(attributeLMIR_ABS);
-        featureList.add(descriptionLMIR_ABS);
-        featureList.add(wholeDocLMIR_ABS);
+        featureList.add(title_titleLMIR_ABS);
+        featureList.add(title_contentLMIR_ABS);
+        featureList.add(content_titleLMIR_ABS);
+        featureList.add(content_contentLMIR_ABS);
 
         featureList.add(netBid);
         featureList.add(price);
